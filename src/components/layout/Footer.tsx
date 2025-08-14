@@ -12,8 +12,7 @@ export default function Footer() {
                         </div>
 
                         <p className="mt-4 max-w-xs text-gray-500 dark:text-gray-400">
-                            Lorem ipsum dolor, sit amet consectetur adipisicing elit. Esse non cupiditate quae nam
-                            molestias.
+                            Lorem ipsum dolor, sit amet consectetur adipisicing elit. Esse non cupiditate .
                         </p>
 
                         <ul className="mt-8 flex gap-6">
