@@ -1,5 +1,6 @@
 import Logo from "@/assets/icons/logo";
 
+
 export default function Footer() {
     return (
         // <footer className="bg-primary dark:bg-gray-900">
