@@ -1,16 +1,17 @@
 import App from "@/App";
-import about from "@/pages/about";
+import About from "@/pages/About";
 import { createBrowserRouter } from "react-router";
 
 export const router = createBrowserRouter([
     {
         path: "/",
         Component: App,
+        // Component: CommonLayout,
         // element: <App />
         children: [
             {
                 path: "about",
-                Component: about
+                Component: About
             }
         ]
     }
