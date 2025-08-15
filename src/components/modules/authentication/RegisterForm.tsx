@@ -15,11 +15,19 @@ import { useForm } from "react-hook-form";
 import { Link } from "react-router";
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
+import Password from "@/components/ui/password";
 
 
 
-const formSchema = z.object({
-    name: z.string().min(2, {message: "Username must be at least 2 characters."}).max(50),
+const registerSchema = z.object({
+    name: z.string().min(2, { message: "Username must be at least 2 characters." }).max(50),
+    email: z.email(),
+    password: z.string().min(8, { message: "Password must be at least 8 characters." }),
+    confirmPassword: z.string().min(8, { message: "Confirm Password must be at least 8 characters." })
+    
+}).refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords don't match",
+    path: ["confirmPassword"]
 })
 
 
@@ -27,17 +35,20 @@ const formSchema = z.object({
 
 export function RegisterForm({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
 
-    const form = useForm<z.infer<typeof formSchema>>({
-        resolver: zodResolver(formSchema),
+    const form = useForm<z.infer<typeof registerSchema>>({
+        resolver: zodResolver(registerSchema),
         defaultValues: {
             name: "",
+            email: "",
+            password: "",
+            confirmPassword: ""
         }
     })
 
     // const onSubmit:SubmitHandler<FieldValues> = (data) => {
     //     console.log(data);
     // }
-    const onSubmit = (data : z.infer<typeof formSchema>) => {
+    const onSubmit = (data: z.infer<typeof registerSchema>) => {
         console.log(data);
     }
 
@@ -52,19 +63,76 @@ export function RegisterForm({ className, ...props }: React.HTMLAttributes<HTMLD
             </div>
             <div className="grid gap-6">
                 <Form {...form}>
-                    <form onSubmit={form.handleSubmit(onSubmit)}>
+                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                        {/* name field */}
                         <FormField
                             control={form.control}
                             name="name"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Username</FormLabel>
+                                    <FormLabel>Jhon Doe</FormLabel>
                                     <FormControl>
                                         {/* <Input placeholder="shadcn" onChange={field.onChange} onBlur={field.onBlur} /> */}
                                         <Input placeholder="shadcn" {...field} />
                                     </FormControl>
                                     <FormDescription className="sr-only">
                                         This is your public display name.
+                                    </FormDescription>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        {/* email field */}
+                        <FormField
+                            control={form.control}
+                            name="email"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Email</FormLabel>
+                                    <FormControl>
+                                        {/* <Input placeholder="shadcn" onChange={field.onChange} onBlur={field.onBlur} /> */}
+                                        <Input placeholder="jhonDoe@gmail.com" type="email" {...field} />
+                                    </FormControl>
+                                    <FormDescription className="sr-only">
+                                        This is your email name.
+                                    </FormDescription>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        {/* password field */}
+                        <FormField
+                            control={form.control}
+                            name="password"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Password</FormLabel>
+                                    <FormControl>
+                                        {/* <Input placeholder="shadcn" onChange={field.onChange} onBlur={field.onBlur} /> */}
+                                        {/* <Input placeholder="********" type="password" {...field} /> */}
+                                        <Password {...field} />
+                                    </FormControl>
+                                    <FormDescription className="sr-only">
+                                        This is your password.
+                                    </FormDescription>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        {/* confirm password field */}
+                        <FormField
+                            control={form.control}
+                            name="confirmPassword"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Confirm Password</FormLabel>
+                                    <FormControl>
+                                        {/* <Input placeholder="shadcn" onChange={field.onChange} onBlur={field.onBlur} /> */}
+                                        {/* <Input placeholder="********" type="password" {...field} /> */}
+                                        <Password {...field} />
+                                    </FormControl>
+                                    <FormDescription className="sr-only">
+                                        This is your Confirm Password.
                                     </FormDescription>
                                     <FormMessage />
                                 </FormItem>
