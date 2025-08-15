@@ -1,11 +1,11 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
 import { useSendOtpMutation, useVerifyOtpMutation } from "@/redux/features/auth/auth.api";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Dot } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useLocation } from "react-router";
 import { toast } from "sonner";
@@ -29,6 +29,7 @@ export default function Verify() {
     const [confirmed, setConfirmed] = useState(false);
     const [sendOtp] = useSendOtpMutation();
     const [verifyOtp] = useVerifyOtpMutation();
+    const [timer, setTimer] = useState(5)
 
 
 
@@ -42,19 +43,19 @@ export default function Verify() {
 
 
     const handleConfirmed = async () => {
-        const toastId = toast.loading("Sending OTP");
+        // const toastId = toast.loading("Sending OTP");
+        setConfirmed(true)
 
-        try {
-            const res = await sendOtp({ email: email }).unwrap();
+        // try {
+        //     const res = await sendOtp({ email: email }).unwrap();
 
-            if (res.success) {
-                toast.success("OTP sent", { id: toastId })
-                setConfirmed(true)
-            }
+        //     if (res.success) {
+        //         toast.success("OTP sent", { id: toastId })
+        //     }
 
-        } catch (error) {
-            console.log(error);
-        }
+        // } catch (error) {
+        //     console.log(error);
+        // }
     }
 
 
@@ -87,6 +88,13 @@ export default function Verify() {
     // }, [email])
 
 
+    useEffect(() => {
+        const timerId = setInterval(() => {
+            if (email && confirmed) {
+                setTimer((prev) => prev - 1)
+            }
+        }, 1000)
+    }, [email, confirmed])
 
 
     return (
@@ -132,6 +140,10 @@ export default function Verify() {
                                                     </InputOTPGroup>
                                                 </InputOTP>
                                             </FormControl>
+                                            <FormDescription>
+                                                <Button variant="link" className="pl-0">Resend OTP</Button>
+                                                {timer}
+                                            </FormDescription>
                                             <FormMessage />
                                         </FormItem>
                                     )}

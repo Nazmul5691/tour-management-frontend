@@ -29,7 +29,11 @@ export function LoginForm({ className, ...props }: React.HTMLAttributes<HTMLDivE
         } catch (err) {
             console.error(err);
 
-            if (err.status === 401) {
+            if (err.data.message === "Password does not match") {
+                toast.error("Invalid Credentials");
+            }
+
+            if (err.data.message === "User does not verified") {
                 toast.error("Your account is not verified");
                 navigate("/verify", { state: data.email });
             }
