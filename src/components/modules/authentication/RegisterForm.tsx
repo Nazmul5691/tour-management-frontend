@@ -12,10 +12,12 @@ import {
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { useForm } from "react-hook-form";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
-import Password from "@/components/ui/password";
+import Password from "@/components/ui/Password";
+import { useRegisterMutation } from "@/redux/features/auth/auth.api";
+import { toast } from "sonner";
 
 
 
@@ -24,7 +26,7 @@ const registerSchema = z.object({
     email: z.email(),
     password: z.string().min(8, { message: "Password must be at least 8 characters." }),
     confirmPassword: z.string().min(8, { message: "Confirm Password must be at least 8 characters." })
-    
+
 }).refine((data) => data.password === data.confirmPassword, {
     message: "Passwords don't match",
     path: ["confirmPassword"]
@@ -34,6 +36,11 @@ const registerSchema = z.object({
 
 
 export function RegisterForm({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
+
+
+    const [register] = useRegisterMutation();
+    const navigate = useNavigate();
+
 
     const form = useForm<z.infer<typeof registerSchema>>({
         resolver: zodResolver(registerSchema),
@@ -48,8 +55,23 @@ export function RegisterForm({ className, ...props }: React.HTMLAttributes<HTMLD
     // const onSubmit:SubmitHandler<FieldValues> = (data) => {
     //     console.log(data);
     // }
-    const onSubmit = (data: z.infer<typeof registerSchema>) => {
-        console.log(data);
+    const onSubmit = async (data: z.infer<typeof registerSchema>) => {
+        // console.log(data);
+        const userInfo = {
+            name: data.name,
+            email: data.email,
+            password: data.password
+        }
+
+        try {
+           const result = await register(userInfo).unwrap();
+           console.log(result);
+           toast.success("User created successfully");
+           navigate("/verify")
+
+        } catch (error) {
+            console.log(error);
+        }
     }
 
 
