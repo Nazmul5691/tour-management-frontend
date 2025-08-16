@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
+import { cn } from "@/lib/utils";
 import { useSendOtpMutation, useVerifyOtpMutation } from "@/redux/features/auth/auth.api";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Dot } from "lucide-react";
@@ -42,20 +43,21 @@ export default function Verify() {
     })
 
 
-    const handleConfirmed = async () => {
-        // const toastId = toast.loading("Sending OTP");
-        setConfirmed(true)
+    const handleSendOtp = async () => {
+        const toastId = toast.loading("Sending OTP");
 
-        // try {
-        //     const res = await sendOtp({ email: email }).unwrap();
+        try {
+            const res = await sendOtp({ email: email }).unwrap();
 
-        //     if (res.success) {
-        //         toast.success("OTP sent", { id: toastId })
-        //     }
+            if (res.success) {
+                toast.success("OTP sent", { id: toastId })
+                setConfirmed(true)
+                setTimer(5)
+            }
 
-        // } catch (error) {
-        //     console.log(error);
-        // }
+        } catch (error) {
+            console.log(error);
+        }
     }
 
 
@@ -89,11 +91,17 @@ export default function Verify() {
 
 
     useEffect(() => {
+        if (!email || !confirmed) {
+            return
+        }
+
         const timerId = setInterval(() => {
             if (email && confirmed) {
-                setTimer((prev) => prev - 1)
+                setTimer((prev) => (prev > 0 ? prev - 1 : 0))
             }
         }, 1000)
+
+        return () => clearInterval(timerId)
     }, [email, confirmed])
 
 
@@ -141,7 +149,16 @@ export default function Verify() {
                                                 </InputOTP>
                                             </FormControl>
                                             <FormDescription>
-                                                <Button variant="link" className="pl-0">Resend OTP</Button>
+                                                <Button
+                                                    onClick={handleSendOtp}
+                                                    disabled={timer != 0}
+                                                    type="button"
+                                                    variant="link"
+                                                    className={cn("pl-0", {
+                                                        "cursor-pointer": timer === 0
+                                                    })}>
+                                                    Resend OTP:
+                                                </Button>
                                                 {timer}
                                             </FormDescription>
                                             <FormMessage />
@@ -165,7 +182,7 @@ export default function Verify() {
                             </CardDescription>
                         </CardHeader>
                         <CardFooter className="flex-col gap-2">
-                            <Button onClick={handleConfirmed} className="w-[250px]">
+                            <Button onClick={handleSendOtp} className="w-[250px]">
                                 Confirm
                             </Button>
                         </CardFooter>

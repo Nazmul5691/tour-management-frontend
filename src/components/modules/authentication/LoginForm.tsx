@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Button } from "@/components/ui/button";
 import {
     Form,
@@ -8,6 +9,7 @@ import {
     FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import config from "@/config";
 import { cn } from "@/lib/utils";
 import { useLoginMutation } from "@/redux/features/auth/auth.api";
 import { useForm, type FieldValues, type SubmitHandler } from "react-hook-form";
@@ -17,16 +19,27 @@ import { toast } from "sonner";
 export function LoginForm({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
 
     const navigate = useNavigate();
-    const form = useForm();
+    // const form = useForm();
     const [login] = useLoginMutation();
 
+    const form = useForm({
+        defaultValues: {
+            email: 'nazmulislam5691@gmail.com',
+            password: 'Mir1234@'
+        }
+    });
 
     const onSubmit: SubmitHandler<FieldValues> = async (data) => {
         try {
             const res = await login(data).unwrap();
             console.log(res);
 
-        } catch (err) {
+            if(res.success){
+                toast.success("Logged in successfully");
+                navigate("/")
+            }
+
+        } catch (err:any) {
             console.error(err);
 
             if (err.data.message === "Password does not match") {
@@ -61,7 +74,8 @@ export function LoginForm({ className, ...props }: React.HTMLAttributes<HTMLDivE
                                         <Input
                                             placeholder="john@example.com"
                                             {...field}
-                                            value={field.value || ""}
+                                            // value={field.value || ""}
+                                            value={field.value}
                                         />
                                     </FormControl>
                                     <FormMessage />
@@ -80,7 +94,8 @@ export function LoginForm({ className, ...props }: React.HTMLAttributes<HTMLDivE
                                             type="password"
                                             placeholder="********"
                                             {...field}
-                                            value={field.value || ""}
+                                        // value={field.value || ""}
+                                        // value={field.value}
                                         />
                                     </FormControl>
                                     <FormMessage />
@@ -101,6 +116,9 @@ export function LoginForm({ className, ...props }: React.HTMLAttributes<HTMLDivE
                 </div>
 
                 <Button
+                    // onClick={() => window.open(`${config.baserUrl}/auth/google`)}
+                    onClick={() => (window.location.href = `${config.baseUrl}/auth/google`)}
+                    // onClick={() => (window.location.href =("https://tout-management-system-backend.vercel.app/api/v1/auth/google"))}
                     type="button"
                     variant="outline"
                     className="w-full cursor-pointer"

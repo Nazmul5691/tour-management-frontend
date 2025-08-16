@@ -1,34 +1,74 @@
-import config from "@/config"
-import axios from "axios"
+// import config from "@/config"
+// import axios from "axios"
+
+// export const axiosInstance = axios.create({
+//     baseURL: config.baserUrl,
+//     withCredentials: true
+// })
+
+
+
+
+// // Add a request interceptor
+// axiosInstance.interceptors.request.use(function (config) {
+//     // Do something before request is sent
+//     console.log('axios', config);
+//     return config;
+//   }, function (error) {
+//     // Do something with request error
+//     return Promise.reject(error);
+//   },
+// );
+
+
+
+// // Add a response interceptor
+// axiosInstance.interceptors.response.use(function onFulfilled(response) {
+//     // Any status code that lie within the range of 2xx cause this function to trigger
+//     // Do something with response data
+//      console.log('axios', response);
+//     return response;
+//   }, function onRejected(error) {
+//     // Any status codes that falls outside the range of 2xx cause this function to trigger
+//     // Do something with response error
+//     return Promise.reject(error);
+//   });
+
+
+import config from "@/config";
+import axios from "axios";
 
 export const axiosInstance = axios.create({
-    baseURL: config.baserUrl
-})
-
+  baseURL: config.baseUrl,
+  withCredentials: true,
+});
 
 
 
 // Add a request interceptor
-axiosInstance.interceptors.request.use(function (config) {
+axiosInstance.interceptors.request.use(
+  function (config) {
     // Do something before request is sent
-    console.log('axios', config);
+    console.log("Axios", config);
     return config;
-  }, function (error) {
+  },
+  function (error) {
     // Do something with request error
     return Promise.reject(error);
-  },
+  }
 );
 
-
-
 // Add a response interceptor
-axiosInstance.interceptors.response.use(function onFulfilled(response) {
+axiosInstance.interceptors.response.use(
+  function onFulfilled(response) {
     // Any status code that lie within the range of 2xx cause this function to trigger
     // Do something with response data
-     console.log('axios', response);
+    console.log("Axios", response);
     return response;
-  }, function onRejected(error) {
+  },
+  function onRejected(error) {
     // Any status codes that falls outside the range of 2xx cause this function to trigger
     // Do something with response error
     return Promise.reject(error);
-  });
+  }
+);

@@ -149,8 +149,6 @@ export function RegisterForm({ className, ...props }: React.HTMLAttributes<HTMLD
                                 <FormItem>
                                     <FormLabel>Confirm Password</FormLabel>
                                     <FormControl>
-                                        {/* <Input placeholder="shadcn" onChange={field.onChange} onBlur={field.onBlur} /> */}
-                                        {/* <Input placeholder="********" type="password" {...field} /> */}
                                         <Password {...field} />
                                     </FormControl>
                                     <FormDescription className="sr-only">

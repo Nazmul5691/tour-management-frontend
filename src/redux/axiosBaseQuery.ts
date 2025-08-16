@@ -10,6 +10,7 @@ const axiosBaseQuery =
       data?: AxiosRequestConfig['data']
       params?: AxiosRequestConfig['params']
       headers?: AxiosRequestConfig['headers']
+      
     },
     unknown,
     unknown
@@ -22,6 +23,7 @@ const axiosBaseQuery =
         data,
         params,
         headers,
+        withCredentials: true
       })
       return { data: result.data }
     } catch (axiosError) {
