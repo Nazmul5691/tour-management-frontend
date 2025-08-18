@@ -7,7 +7,7 @@ export const tourApi = baseApi.injectEndpoints({
 
         addTourType: builder.mutation({
             query: (tourTypeName) => ({
-                url: "tour/create-tour-type",
+                url: "/tour/create-tour-type",
                 method: "POST",
                 // body: userInfo
                 data: tourTypeName      //if we use axios we should use data
@@ -18,7 +18,7 @@ export const tourApi = baseApi.injectEndpoints({
 
         removeTourType: builder.mutation({
             query: (tourTypeId) => ({
-                url: `tour/tour-types/${tourTypeId}`,
+                url: `/tour/tour-types/${tourTypeId}`,
                 method: "DELETE"
             }),
             invalidatesTags: ["TOUR"]
