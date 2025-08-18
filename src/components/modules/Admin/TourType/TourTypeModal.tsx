@@ -35,7 +35,6 @@ export function AddTourTypeModal() {
 
     return (
         <Dialog>
-            <form>
                 <DialogTrigger asChild>
                     <Button>Add Tour Type</Button>
                 </DialogTrigger>
@@ -74,7 +73,6 @@ export function AddTourTypeModal() {
                         </Button>
                     </DialogFooter>
                 </DialogContent>
-            </form>
         </Dialog>
     );
 }
