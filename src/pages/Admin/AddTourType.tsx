@@ -45,6 +45,7 @@ export default function AddTourType() {
     };
 
     const totalPage = data?.meta?.totalPage || 1;
+    
 
     //* Total page 2 => [0, 0]
 
