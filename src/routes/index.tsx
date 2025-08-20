@@ -12,6 +12,14 @@ import { withAuth } from "@/utils/withAuth";
 import Unauthorized from "@/pages/Unauthorized";
 import { role } from "@/constants/role";
 import type { TRole } from "@/types";
+import Tours from "@/pages/Tours";
+import TourDetails from "@/pages/TourDetails";
+import Booking from "@/pages/Booking";
+import Homepage from "@/pages/HomePage";
+import Success from "@/pages/Payment/Success";
+import Fail from "@/pages/Payment/Fail";
+import Cancel from "@/pages/Payment/Cancel";
+
 
 export const router = createBrowserRouter([
     {
@@ -21,22 +29,39 @@ export const router = createBrowserRouter([
         // element: <App />
         children: [
             {
+                index: true,
+                Component: Homepage
+            },
+            {
                 path: "about",
-                Component:  withAuth(About)
-            }
+                Component: About
+            },
+            {
+                path: "tours",
+                Component: Tours
+            },
+            {
+                path: "tours/:id",
+                Component: TourDetails
+            },
+            {
+                path: "booking/:id",
+                Component: withAuth(Booking)
+            },
+
         ]
     },
     {
         path: "/admin",
         Component: withAuth(DashboardLayout, role.superAdmin as TRole),
         // Component: DashboardLayout,
-        children: [{index: true, element: <Navigate to="/admin/analytics" />},...generateRoutes(adminSidebarItems)]
+        children: [{ index: true, element: <Navigate to="/admin/analytics" /> }, ...generateRoutes(adminSidebarItems)]
         // children: [...generateRoutes(adminSidebarItems)]      //array return kortece and amader children er vitor indivisual ak akta object lagbe tai spreed kore dilam 
     },
     {
         path: "/user",
         Component: withAuth(DashboardLayout, role.user as TRole),
-        children: [{index: true, element: <Navigate to="/user/bookings" />},...generateRoutes(userSidebarItems)]
+        children: [{ index: true, element: <Navigate to="/user/bookings" /> }, ...generateRoutes(userSidebarItems)]
     },
     {
         path: "/login",
@@ -53,7 +78,19 @@ export const router = createBrowserRouter([
     {
         path: "/unauthorized",
         Component: Unauthorized
-    }
+    },
+    {
+        Component: Success,
+        path: "/payment/success",
+    },
+    {
+        Component: Fail,
+        path: "/payment/fail",
+    },
+    {
+        Component: Cancel,
+        path: "/payment/cancel",
+    },
 ])
 
 
