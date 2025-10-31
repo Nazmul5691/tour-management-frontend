@@ -14,20 +14,31 @@ export const divisionApi = baseApi.injectEndpoints({
         }),
 
 
-        getDivision: builder.query({
-            query: () => ({
+        getDivisions: builder.query({
+            query: (params) => ({
                 url: "/division",
                 method: "GET",
+                params: params,
             }),
             providesTags: ["DIVISION"],
-            // transformResponse: (response) => ({
-            //     data: response.data,
-            //     meta: response.meta,
-            // })
+            transformResponse: (response) => ({
+                data: response.data,
+                meta: response.meta,
+            })
         })
-
+        // getDivisions: builder.query({
+        //     query: (params) => ({
+        //         url: "/division",
+        //         method: "GET",
+        //         params,
+        //     }),
+        //     providesTags: ["DIVISION"],
+        //     transformResponse: (response) => response.data,
+        // }),
     })
+
 })
 
 
-export const { useAddDivisionMutation , useGetDivisionQuery} = divisionApi;
+
+export const { useAddDivisionMutation, useGetDivisionsQuery } = divisionApi;

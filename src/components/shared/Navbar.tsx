@@ -1,5 +1,5 @@
 
-import Logo from "@/assets/icons/logo"
+import Logo from '@/assets/icons/Logo';
 import { Button } from "@/components/ui/button"
 import {
   NavigationMenu,
@@ -12,7 +12,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
-import { ModeToggle } from "./ModeToggler"
+import { ModeToggle } from "../ModeToggler"
 import { Link } from "react-router"
 import { authApi, useLogoutMutation, useUserInfoQuery } from "@/redux/features/auth/auth.api"
 import { useAppDispatch } from "@/redux/hook"
@@ -31,7 +31,7 @@ const navigationLinks = [
 export default function Navbar() {
 
   const { data } = useUserInfoQuery(undefined)
-  console.log(data);
+  // console.log(data);
   const [logout] = useLogoutMutation();
   const dispatch = useAppDispatch();
 

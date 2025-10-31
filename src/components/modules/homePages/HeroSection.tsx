@@ -11,7 +11,7 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import { useState } from "react";
-import { useGetDivisionQuery } from "@/redux/features/division/division.api";
+import { useGetDivisionsQuery } from "@/redux/features/division/division.api";
 import Logo from "@/assets/icons/logo";
 
 export default function HeroSection() {
@@ -20,7 +20,7 @@ export default function HeroSection() {
     );
 
     // const { data: divisionData, isLoading: divisionIsLoading } =useGetDivisionQuery(undefined);
-    const { data: divisionData } =useGetDivisionQuery(undefined);
+    const { data: divisionData } =useGetDivisionsQuery(undefined);
 
     const divisionOption = divisionData?.data?.map(
         (item: { _id: string; name: string }) => ({

@@ -9,7 +9,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
-import { useGetDivisionQuery } from "@/redux/features/division/division.api";
+import { useGetDivisionsQuery } from "@/redux/features/division/division.api";
 import { useGetTourTypesQuery } from "@/redux/features/tour/tour.api";
 import { useSearchParams } from "react-router";
 
@@ -19,7 +19,7 @@ export default function TourFilters() {
     const selectedDivision = searchParams.get("division") || undefined;
     const selectedTourType = searchParams.get("tourType") || undefined;
 
-    const { data: divisionData, isLoading: divisionIsLoading } =useGetDivisionQuery(undefined);
+    const { data: divisionData, isLoading: divisionIsLoading } =useGetDivisionsQuery(undefined);
 
     const { data: tourTypeData, isLoading: tourTypeIsLoading } =useGetTourTypesQuery({ limit: 1000, fields: "_id,name" });
 
@@ -98,7 +98,7 @@ export default function TourFilters() {
                     </SelectTrigger>
                     <SelectContent>
                         <SelectGroup>
-                            <SelectLabel>Divisions</SelectLabel>
+                            <SelectLabel>Tour Types</SelectLabel>
                             {tourTypeOptions?.map(
                                 (item: { value: string; label: string }) => (
                                     <SelectItem key={item.value} value={item.value}>

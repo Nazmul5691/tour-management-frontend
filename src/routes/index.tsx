@@ -1,24 +1,24 @@
 import App from "@/App";
 import DashboardLayout from "@/components/layout/DashboardLayout";
-import About from "@/pages/About";
-import Login from "@/pages/Login";
-import Register from "@/pages/Register";
-import Verify from "@/pages/Verify";
+import Login from "@/pages/Auth/Login";
+import Register from "@/pages/Auth/Register";
+import Verify from "@/pages/Auth/Verify";
 import { generateRoutes } from "@/utils/generateRoutes";
 import { createBrowserRouter, Navigate } from "react-router";
 import { adminSidebarItems } from "./adminSidebarItems";
 import { userSidebarItems } from "./userSidebarItems";
 import { withAuth } from "@/utils/withAuth";
-import Unauthorized from "@/pages/Unauthorized";
+import Unauthorized from "@/pages/Auth/Unauthorized";
 import { role } from "@/constants/role";
 import type { TRole } from "@/types";
-import Tours from "@/pages/Tours";
-import TourDetails from "@/pages/TourDetails";
+import Tours from "@/pages/Tours/Tours";
+import TourDetails from "@/pages/Tours/TourDetails";
 import Booking from "@/pages/Booking";
-import Homepage from "@/pages/HomePage";
 import Success from "@/pages/Payment/Success";
 import Fail from "@/pages/Payment/Fail";
 import Cancel from "@/pages/Payment/Cancel";
+import Homepage from "@/pages/Home/Homepage";
+import AboutUs from "@/pages/AboutUs/AboutUs";
 
 
 export const router = createBrowserRouter([
@@ -34,7 +34,7 @@ export const router = createBrowserRouter([
             },
             {
                 path: "about",
-                Component: About
+                Component: AboutUs
             },
             {
                 path: "tours",

@@ -1,4 +1,4 @@
-export default function About() {
+export default function AboutUs() {
     return (
         <div>
             <h1>This is about component</h1>

@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
-import { useGetDivisionQuery } from "@/redux/features/division/division.api";
-import { useGetAllToursQuery } from "@/redux/features/tour/tour.api";
+import { useGetDivisionsQuery } from "@/redux/features/division/division.api";
+import { useGetAllToursQuery, useGetTourTypesQuery } from "@/redux/features/tour/tour.api";
 import { format } from "date-fns";
 import { Link, useParams } from "react-router";
 
@@ -8,17 +8,29 @@ export default function TourDetails() {
     const { id } = useParams();
     const { data, isLoading } = useGetAllToursQuery({ _id: id });
 
-    const { data: divisionData } = useGetDivisionQuery(
+    const { data: divisionData } = useGetDivisionsQuery(
         {
             _id: data?.[0]?.division,
             fields: "name",
         },
         {
-            skip: !data,
+            skip: !data
         }
     );
 
-    console.log(divisionData);
+    const { data: tourType } = useGetTourTypesQuery(
+        {
+            _id: data?.[0]?.tourType,
+            fields: "name",
+        },
+        {
+            skip: !data
+        }
+    );
+
+    // const { data: divisionData }= useGetDivisionsQuery(undefined)
+
+    // console.log('division data', divisionData?.data);
 
     const tourData = data?.[0];
 
@@ -83,10 +95,10 @@ export default function TourDetails() {
                             <strong>Arrival:</strong> {tourData?.arrivalLocation}
                         </p>
                         <p>
-                            <strong>Division:</strong> {divisionData?.[0]?.name}
+                            <strong>Division:</strong> {divisionData?.data?.[0]?.name}
                         </p>
                         <p>
-                            <strong>Tour Type:</strong> {tourData?.tourType}
+                            <strong>Tour Type:</strong> {tourType?.data?.[0]?.name}
                         </p>
                         <p>
                             <strong>Min Age:</strong> {tourData?.minAge} years
