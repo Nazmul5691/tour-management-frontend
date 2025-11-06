@@ -19,6 +19,8 @@ import Fail from "@/pages/Payment/Fail";
 import Cancel from "@/pages/Payment/Cancel";
 import Homepage from "@/pages/Home/Homepage";
 import AboutUs from "@/pages/AboutUs/AboutUs";
+import Destination from "@/components/modules/destination/Destination";
+import Blog from "@/components/modules/blog/Blog";
 
 
 export const router = createBrowserRouter([
@@ -33,16 +35,24 @@ export const router = createBrowserRouter([
                 Component: Homepage
             },
             {
-                path: "about",
-                Component: AboutUs
-            },
-            {
                 path: "tours",
                 Component: Tours
             },
             {
                 path: "tours/:id",
                 Component: TourDetails
+            },
+            {
+                path: "destination",
+                Component: Destination
+            },
+            {
+                path: "about",
+                Component: AboutUs
+            },
+            {
+                path: "blog",
+                Component: Blog
             },
             {
                 path: "booking/:id",
