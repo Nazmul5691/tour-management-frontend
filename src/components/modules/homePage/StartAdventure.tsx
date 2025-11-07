@@ -15,9 +15,9 @@ export default function StartAdventure() {
           </p>
           <Button
             variant="secondary"
-            className="bg-white text-orange-600 hover:bg-orange-100 rounded-full px-6 py-2 font-semibold"
+            className="bg-white text-orange-600 hover:cursor-pointer hover:bg-orange-100 rounded-full px-6 py-2 font-semibold"
           >
-            Start Planning
+            Explore Tours
           </Button>
         </div>
 
