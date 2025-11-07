@@ -2,7 +2,7 @@ import FaqCard from "./FaqCard";
 
 export default function Faq() {
     return (
-        <section className="relative bg-gradient-to-b from-sky-50 to-white py-16 lg:py-15 overflow-hidden">
+        <section className="relative bg-gradient-to-b from-sky-50 to-white py-10 lg:pb-0 lg:pt-15 overflow-hidden">
             <div className="max-w-7xl mx-auto px-6 md:px-12 space-y-16">
 
                 {/* FAQ Section Heading */}
@@ -10,12 +10,12 @@ export default function Faq() {
                     <p className="text-sm font-medium text-gray-500 uppercase tracking-wide">
                         Need Help? We've Got You Covered
                     </p>
-                    <h2 className="text-3xl md:text-4xl font-extrabold mt-2 leading-tight">
+                    <h2 className="text-3xl md:text-[40px] font-extrabold mt-2 leading-tight">
                         <span className="bg-gradient-to-r from-yellow-400 via-orange-500 to-pink-500 bg-clip-text text-transparent">
                             Frequently Asked Questions
                         </span>
                     </h2>
-                    <p className="text-black mt-4 max-w-2xl mx-auto">
+                    <p className="text-gray-800 mt-4 max-w-2xl mx-auto">
                         Browse our FAQ section to find answers to common questions about booking, <br />
                         transportation, travel essentials, cancellations, and more.
                     </p>

@@ -22,21 +22,22 @@ export default function DiscoverTours() {
     };
 
     return (
-        <section className="container mx-auto px-4 py-16">
+        <section className="container mx-auto px-4 py-10">
             {/* Header */}
             <div className="text-center mb-12">
-                <span className="text-sm font-medium text-gray-400 uppercase tracking-wider">
+                <span className="text-sm font-medium text-gray-500 uppercase tracking-wider">
                     Explore Our Destinations
                 </span>
-                <h1 className="text-3xl md:text-5xl font-extrabold mt-2 leading-tight">
+                <h1 className="text-3xl md:text-[40px] font-extrabold mt-2 leading-tight">
                     Explore{" "}
                     <span className="bg-gradient-to-r from-yellow-400 via-orange-500 to-pink-500 bg-clip-text text-transparent">
                         Amazing Tours
                     </span>
                 </h1>
                 <p className="text-gray-800 mt-4 max-w-2xl mx-auto">
-                    Explore breathtaking destinations and create unforgettable memories with our
-                    carefully curated tours around Bangladesh.
+                    Explore breathtaking destinations and create unforgettable memories with
+                    <br />
+                    our carefully curated tours around Bangladesh.
                 </p>
             </div>
 
@@ -86,7 +87,7 @@ export default function DiscoverTours() {
                                 </div>
 
                                 <div className="flex justify-between items-center mt-4">
-                                    <Button className="bg-blue-600 hover:bg-blue-700 rounded-full text-white px-5 py-2 text-sm">
+                                    <Button className="bg-blue-600 hover:cursor-pointer hover:bg-blue-700 rounded-full text-white px-5 py-2 text-sm">
                                         Explore Tour
                                     </Button>
                                     <div className="flex items-center text-gray-400 text-xs gap-1">
@@ -103,7 +104,7 @@ export default function DiscoverTours() {
             <div className="text-center mt-12">
                 <Button
                     variant="secondary"
-                    className="text-white bg-gradient-to-r from-yellow-400 via-orange-500 to-pink-500 hover:from-yellow-500 hover:to-rose-600 font-semibold px-6 py-2 rounded-full"
+                    className="text-white bg-gradient-to-r hover:cursor-pointer from-yellow-400 via-orange-500 to-pink-500 hover:from-yellow-500 hover:to-rose-600 font-semibold px-6 py-2 rounded-full"
                 >
                     Explore All Tours
                 </Button>

@@ -65,7 +65,7 @@ export default function Navbar() {
           <Popover>
             <PopoverTrigger asChild>
               <Button
-                className="group size-8 md:hidden text-white hover:bg-white/10"
+                className="group size-8 md:hidden text-white hover:bg-black"
                 variant="ghost"
                 size="icon"
               >
@@ -104,7 +104,7 @@ export default function Navbar() {
                 <NavigationMenuList className="flex-col items-start gap-0 md:gap-2">
                   {navigationLinks.map((link, index) => (
                     <NavigationMenuItem key={index} className="w-full">
-                      <NavigationMenuLink asChild className="py-1.5 hover:text-yellow-400 transition-colors">
+                      <NavigationMenuLink asChild className="py-1.5 hover:text-black transition-colors">
                         <Link to={link.href}>{link.label}</Link>
                       </NavigationMenuLink>
                     </NavigationMenuItem>
@@ -134,7 +134,7 @@ export default function Navbar() {
                     <NavigationMenuItem key={index}>
                       <NavigationMenuLink
                         asChild
-                        className="text-white/90 hover:text-yellow-400 py-1.5 font-medium transition-colors"
+                        className="text-white/90 hover:text-black py-1.5 font-medium transition-colors"
                       >
                         <Link to={link.href}>{link.label}</Link>
                       </NavigationMenuLink>
@@ -144,7 +144,7 @@ export default function Navbar() {
                     <NavigationMenuItem key={index}>
                       <NavigationMenuLink
                         asChild
-                        className="text-white/90 hover:text-yellow-400 py-1.5 font-medium transition-colors"
+                        className="text-white/90 hover:text-black py-1.5 font-medium transition-colors"
                       >
                         <Link to={link.href}>{link.label}</Link>
                       </NavigationMenuLink>

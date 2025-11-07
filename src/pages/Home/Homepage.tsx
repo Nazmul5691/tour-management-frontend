@@ -20,10 +20,8 @@ export default function Homepage() {
       <div className="bg-gray-100">
         <DiscoverTours />
       </div>
-      {/* <Categories /> */}
-      <WhyBookWithUs />
       <Carosouel />
-      {/* <ExploreDreamTour /> */}
+      <WhyBookWithUs />
       <Milestone />
       <Parallax />
       <ClientReview />

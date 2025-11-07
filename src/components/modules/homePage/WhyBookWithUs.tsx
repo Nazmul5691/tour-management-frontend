@@ -40,14 +40,16 @@ export default function WhyBookWithUs() {
                     <span className="text-sm font-medium text-gray-400 uppercase tracking-wider">
                         Why Choose Us
                     </span>
-                    <h1 className="text-3xl md:text-5xl font-extrabold mt-2 leading-tight">
+                    <h1 className="text-3xl md:text-[40px] font-extrabold mt-2 leading-tight">
                         Why{" "}
                         <span className="bg-gradient-to-r from-yellow-400 via-orange-500 to-pink-500 bg-clip-text text-transparent">
                             Book With Us?
                         </span>
                     </h1>
                     <p className="text-gray-300 mt-4 max-w-2xl mx-auto">
-                        Discover why travelers love us — trusted service, unbeatable deals, and unforgettable experiences across Bangladesh.
+                        Discover why travelers love us — trusted service, unbeatable deals,
+                        <br />
+                        and unforgettable experiences across Bangladesh.
                     </p>
                 </div>
 

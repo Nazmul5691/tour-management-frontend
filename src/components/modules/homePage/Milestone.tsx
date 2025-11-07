@@ -52,7 +52,7 @@ const Milestone = () => {
                 </div>
             </div>
             <div className='flex items-center justify-center pb-10'>
-                <button className="py-2 w-[280px] h-12 px-2 rounded-sm  text-white bg-gradient-to-r from-yellow-400 via-orange-500 to-pink-500 hover:from-yellow-500 hover:to-rose-600 duration-300 flex items-center justify-center overflow-hidden hover:overflow-visible relative group">
+                <button className="py-2 w-[280px] h-12 px-2 hover:cursor-pointer rounded-sm  text-white bg-gradient-to-r from-yellow-400 via-orange-500 to-pink-500 hover:from-yellow-500 hover:to-rose-600 duration-300 flex items-center justify-center overflow-hidden hover:overflow-visible relative group">
                     <svg viewBox="0 0 1024 1024" className="icon rotate-45 group-hover:duration-700 absolute w-9 -translate-x-full translate-y-full scale-0 group-hover:scale-100 group-hover:translate-x-8 group-hover:-translate-y-5 duration-150" version="1.1" xmlns="http://www.w3.org/2000/svg" fill="#000000">
                         <g strokeWidth="0"></g>
                         <g strokeLinecap="round" strokeLinejoin="round"></g>
@@ -67,7 +67,7 @@ const Milestone = () => {
                             <path d="M512.5 1016.6c-6.2 0-11.7-3.7-13.9-9.2-31.2-78.9-45.6-110.1-51.8-123.3-5.4-11.6-6.6-14.3-6.6-23.1 0-43.8 32.4-79.5 72.2-79.5 39.8 0 72.2 35.7 72.2 79.5v0.9c0 7.7-1 9.9-5.3 19.1-5.8 12.4-19.5 41.6-53.1 126.5-2 5.4-7.5 9.1-13.7 9.1z m0-206.7c-23.5 0-42.6 22.9-42.6 51 0 2.7 0 2.7 4.1 11.5 5.7 12.3 16.5 35.7 38.5 90.1 24-59.5 34.8-82.6 39.9-93.4 1.2-2.5 2.3-4.9 2.7-5.9v-2.3c0-28.1-19.1-51-42.6-51z" fill="#154B8B"></path>
                         </g>
                     </svg>
-                    <span className="duration-500">Start Booking Now</span>
+                    <span className="duration-500 ">Start Booking Now</span>
                 </button>
             </div>
         </div>

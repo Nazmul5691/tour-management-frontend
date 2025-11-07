@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { MapPin, Plane } from "lucide-react";
 
 export default function StartAdventure() {
   return (
@@ -28,25 +29,36 @@ export default function StartAdventure() {
             className="w-[400px] md:w-[470px] object-contain absolute md:-bottom-40 right-0"
           />
 
-          {/* Airplane dotted path */}
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 300 100"
-            className="absolute bottom-0 left-0 w-56 md:w-72 opacity-70"
-          >
-            <path
-              d="M0,50 Q75,10 150,50 T300,50"
-              stroke="white"
-              strokeWidth="2"
-              strokeDasharray="6 6"
-              fill="none"
+          {/* Airplane dotted path with icons */}
+          <div className="absolute bottom-0 left-0 w-56 md:w-72 opacity-70">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 300 100"
+              className="w-full"
+            >
+              <path
+                d="M0,50 Q75,10 150,50 T300,50"
+                stroke="white"
+                strokeWidth="2"
+                strokeDasharray="6 6"
+                fill="none"
+              />
+            </svg>
+
+            {/* Location Icon at start */}
+            <MapPin
+              size={20}
+              className="absolute left-[-14px] bottom-[40%] text-white"
             />
-            <circle cx="295" cy="50" r="4" fill="white" />
-          </svg>
+
+            {/* Airplane Icon at end */}
+            <Plane
+              size={22}
+              className="absolute right-[-12px] bottom-[40%] text-white rotate-[2deg]"
+            />
+          </div>
         </div>
       </div>
-
-      
     </section>
   );
 }

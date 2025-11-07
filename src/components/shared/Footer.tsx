@@ -6,7 +6,7 @@ export default function Footer() {
           {/* Branding */}
           <div>
             <img
-              src="https://res.cloudinary.com/dh3ej57qw/image/upload/v1762282647/dream_tour_logo_bjkrdj.png"
+              src="/images/dream-tour.png"
               alt="Dream Tour Logo"
               className="h-12 w-auto"
             />
