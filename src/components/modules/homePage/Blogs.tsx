@@ -76,7 +76,7 @@ export default function Blogs() {
               Explore our blog to get the latest news, travel tips, and helpful guides for your next adventure.
             </p>
           </div>
-          <Button className="bg-gradient-to-r from-yellow-400 via-orange-500 to-pink-500 text-white hover:opacity-90 rounded-full px-6 py-3">
+          <Button className="bg-gradient-to-r  hover:cursor-pointer from-yellow-400 via-orange-500 to-pink-500 text-white hover:opacity-90 rounded-full px-6 py-3">
             View All Blogs
           </Button>
         </div>

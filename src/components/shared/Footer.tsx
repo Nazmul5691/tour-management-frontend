@@ -1,6 +1,6 @@
 export default function Footer() {
   return (
-    <footer className="relative bg-gray-50 dark:bg-gray-900 pt-16">
+    <footer className="relative bg-white dark:bg-gray-900 pt-14">
       <div className="mx-auto container space-y-8 px-4 sm:px-6 lg:space-y-10">
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
           {/* Branding */}
@@ -11,7 +11,7 @@ export default function Footer() {
               className="h-12 w-auto"
             />
 
-            <p className="mt-4 max-w-xs text-gray-500 dark:text-gray-400">
+            <p className="mt-4 max-w-xs text-black dark:text-gray-400">
               Dream Tour – Explore the world with us. Get the best travel tips, guides, and services for your next adventure.
             </p>
 
@@ -75,7 +75,7 @@ function FooterColumn({ title, links }: { title: string; links: string[] }) {
           <li key={link}>
             <a
               href="#"
-              className="text-gray-700 transition hover:opacity-75 dark:text-gray-200"
+              className="text-gray-800 transition hover:opacity-75 dark:text-gray-200"
             >
               {link}
             </a>
@@ -85,3 +85,9 @@ function FooterColumn({ title, links }: { title: string; links: string[] }) {
     </div>
   );
 }
+
+
+
+
+
+

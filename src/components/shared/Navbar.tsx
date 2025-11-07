@@ -1,23 +1,21 @@
-import { useState, useEffect } from "react"
-import { Button } from "@/components/ui/button"
+import { useState, useEffect } from "react";
+import { Button } from "@/components/ui/button";
 import {
   NavigationMenu,
   NavigationMenuItem,
   NavigationMenuLink,
   NavigationMenuList,
-} from "@/components/ui/navigation-menu"
+} from "@/components/ui/navigation-menu";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover"
-import { ModeToggle } from "../ModeToggler"
-import { Link } from "react-router"
-import { authApi, useLogoutMutation, useUserInfoQuery } from "@/redux/features/auth/auth.api"
-import { useAppDispatch } from "@/redux/hook"
-import { role } from "@/constants/role"
+} from "@/components/ui/popover";
+import { ModeToggle } from "../ModeToggler";
+import { authApi, useLogoutMutation, useUserInfoQuery } from "@/redux/features/auth/auth.api";
+import { useAppDispatch } from "@/redux/hook";
+import { role } from "@/constants/role";
 
-// Navigation links array
 const navigationLinks = [
   { href: "/", label: "Home", role: "PUBLIC" },
   { href: "/tours", label: "Tours", role: "PUBLIC" },
@@ -27,50 +25,48 @@ const navigationLinks = [
   { href: "/admin", label: "Dashboard", role: role.superAdmin },
   { href: "/admin", label: "Dashboard", role: role.admin },
   { href: "/user", label: "Dashboard", role: role.user },
-]
+];
 
 export default function Navbar() {
-  const { data } = useUserInfoQuery(undefined)
-  const [logout] = useLogoutMutation()
-  const dispatch = useAppDispatch()
-  const [scrolled, setScrolled] = useState(false)
+  const { data } = useUserInfoQuery(undefined);
+  const [logout] = useLogoutMutation();
+  const dispatch = useAppDispatch();
 
-  // Detect scroll position to toggle background shadow
+  const [scrolled, setScrolled] = useState(false);
+  const [isHome, setIsHome] = useState(true);
+
   useEffect(() => {
+    // Detect which page we're on
+    setIsHome(window.location.pathname === "/");
+
     const handleScroll = () => {
-      if (window.scrollY > 50) setScrolled(true)
-      else setScrolled(false)
-    }
-    window.addEventListener("scroll", handleScroll)
-    return () => window.removeEventListener("scroll", handleScroll)
-  }, [])
+      setScrolled(window.scrollY > 50);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   const handleLogout = async () => {
-    await logout(undefined)
-    dispatch(authApi.util.resetApiState())
-  }
+    await logout(undefined);
+    dispatch(authApi.util.resetApiState());
+  };
+
+  // Determine navbar background
+  const headerClass = isHome
+    ? scrolled
+      ? "bg-black/80 backdrop-blur-md shadow-md"
+      : "bg-gradient-to-b from-black/60 to-transparent backdrop-blur-sm"
+    : "bg-black shadow-md";
 
   return (
-    <header
-      className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${scrolled
-          ? "bg-black/80 backdrop-blur-md shadow-md"
-          : "bg-gradient-to-b from-black/60 to-transparent backdrop-blur-sm"
-        }`}
-    >
+    <header className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${headerClass}`}>
       <div className="container mx-auto px-4 flex h-16 items-center justify-between gap-4">
-
         {/* Left side → Logo and Mobile Menu */}
         <div className="flex items-center gap-2">
-          {/* Mobile menu trigger */}
           <Popover>
             <PopoverTrigger asChild>
-              <Button
-                className="group size-8 md:hidden text-white hover:bg-black"
-                variant="ghost"
-                size="icon"
-              >
+              <Button className="group size-8 md:hidden text-white hover:bg-black" variant="ghost" size="icon">
                 <svg
-                  className="pointer-events-none"
                   width={16}
                   height={16}
                   viewBox="0 0 24 24"
@@ -80,18 +76,9 @@ export default function Navbar() {
                   strokeLinecap="round"
                   strokeLinejoin="round"
                 >
-                  <path
-                    d="M4 12L20 12"
-                    className="origin-center -translate-y-[7px] transition-all duration-300 ease-in-out group-aria-expanded:rotate-[315deg]"
-                  />
-                  <path
-                    d="M4 12H20"
-                    className="origin-center transition-all duration-300 ease-in-out group-aria-expanded:rotate-45"
-                  />
-                  <path
-                    d="M4 12H20"
-                    className="origin-center translate-y-[7px] transition-all duration-300 ease-in-out group-aria-expanded:rotate-[135deg]"
-                  />
+                  <path d="M4 12L20 12" />
+                  <path d="M4 12H20" />
+                  <path d="M4 12H20" />
                 </svg>
               </Button>
             </PopoverTrigger>
@@ -105,7 +92,7 @@ export default function Navbar() {
                   {navigationLinks.map((link, index) => (
                     <NavigationMenuItem key={index} className="w-full">
                       <NavigationMenuLink asChild className="py-1.5 hover:text-black transition-colors">
-                        <Link to={link.href}>{link.label}</Link>
+                        <a href={link.href}>{link.label}</a>
                       </NavigationMenuLink>
                     </NavigationMenuItem>
                   ))}
@@ -114,17 +101,12 @@ export default function Navbar() {
             </PopoverContent>
           </Popover>
 
-          {/* Logo */}
           <a href="/" className="flex items-center">
-            <img
-              src="/images/dream-tour.png"
-              alt="Dream Tour Logo"
-              className="h-10 w-auto"
-            />
+            <img src="/images/dream-tour.png" alt="Dream Tour Logo" className="h-10 w-auto" />
           </a>
         </div>
 
-        {/* Middle → All nav links */}
+        {/* Middle → Nav links */}
         <div className="hidden md:flex items-center">
           <NavigationMenu>
             <NavigationMenuList className="gap-6">
@@ -132,21 +114,15 @@ export default function Navbar() {
                 <>
                   {link.role === "PUBLIC" && (
                     <NavigationMenuItem key={index}>
-                      <NavigationMenuLink
-                        asChild
-                        className="text-white/90 hover:text-black py-1.5 font-medium transition-colors"
-                      >
-                        <Link to={link.href}>{link.label}</Link>
+                      <NavigationMenuLink asChild className="text-white/90 hover:text-yellow-400 py-1.5 font-medium transition-colors">
+                        <a href={link.href}>{link.label}</a>
                       </NavigationMenuLink>
                     </NavigationMenuItem>
                   )}
                   {link.role === data?.data?.role && (
                     <NavigationMenuItem key={index}>
-                      <NavigationMenuLink
-                        asChild
-                        className="text-white/90 hover:text-black py-1.5 font-medium transition-colors"
-                      >
-                        <Link to={link.href}>{link.label}</Link>
+                      <NavigationMenuLink asChild className="text-white/90 hover:text-yellow-400 py-1.5 font-medium transition-colors">
+                        <a href={link.href}>{link.label}</a>
                       </NavigationMenuLink>
                     </NavigationMenuItem>
                   )}
@@ -156,15 +132,11 @@ export default function Navbar() {
           </NavigationMenu>
         </div>
 
-        {/* Right side → Mode toggle & Login/Logout */}
+        {/* Right → Mode toggle & Login/Logout */}
         <div className="flex items-center gap-2">
           <ModeToggle />
           {data?.data?.email ? (
-            <Button
-              onClick={handleLogout}
-              variant="outline"
-              className="text-sm bg-white/10 text-white border-white/20 hover:bg-white/20"
-            >
+            <Button onClick={handleLogout} variant="outline" className="text-sm bg-white/10 text-white border-white/20 hover:bg-white/20">
               Logout
             </Button>
           ) : (
@@ -172,13 +144,13 @@ export default function Navbar() {
               asChild
               className="text-sm text-white bg-gradient-to-r from-yellow-400 via-orange-500 to-pink-500 hover:from-yellow-500 hover:to-rose-600 font-semibold"
             >
-              <Link to="/login">Login</Link>
+              <a href="/login">Login</a>
             </Button>
           )}
         </div>
       </div>
     </header>
-  )
+  );
 }
 
 

@@ -1,7 +1,6 @@
 
 import ClientReview from "@/components/modules/homePage/ClientReview";
 import DiscoverTours from "@/components/modules/homePage/DiscoverTours";
-// import ExploreDreamTour from "@/components/modules/homePage/ExploreDreamTour";
 import HeroSection from "@/components/modules/homePage/HeroSection";
 import Milestone from "@/components/modules/homePage/Milestone";
 import Parallax from "@/components/modules/homePage/Parallax";

@@ -1,6 +1,6 @@
 
 import { baseApi } from "@/redux/baseApi";
-import type { IResponse, ITourPackage } from "@/types";
+import type { IMeta, IResponse, ITourPackage } from "@/types";
 
 
 export const tourApi = baseApi.injectEndpoints({
@@ -51,18 +51,35 @@ export const tourApi = baseApi.injectEndpoints({
         }),
 
 
-        getAllTours: builder.query<ITourPackage[], unknown>({
+        // getAllTours: builder.query<ITourPackage[], unknown>({
+        //     query: (params) => ({
+        //         url: "/tour",
+        //         method: "GET",
+        //         params: params,
+        //     }),
+        //     providesTags: ["TOUR"],
+        //     transformResponse: (response: IResponse<ITourPackage[]>) => response.data,
+        // }),
+
+        getAllTours: builder.query<{
+            data: ITourPackage[];
+            meta: IMeta;
+        }, { page?: number; limit?: number; division?: string; tourType?: string } | void>({
             query: (params) => ({
                 url: "/tour",
                 method: "GET",
                 params: params,
             }),
             providesTags: ["TOUR"],
-            transformResponse: (response: IResponse<ITourPackage[]>) => response.data,
-        }),
+            transformResponse: (response: IResponse<ITourPackage[]>) => ({
+                data: response.data,
+                meta: response.meta!, // non-null since backend returns it
+            }),
+        })
+
 
     })
 })
 
 
-export const { useAddTourMutation, useAddTourTypeMutation, useGetTourTypesQuery, useRemoveTourTypeMutation, useGetAllToursQuery} = tourApi;
+export const { useAddTourMutation, useAddTourTypeMutation, useGetTourTypesQuery, useRemoveTourTypeMutation, useGetAllToursQuery } = tourApi;

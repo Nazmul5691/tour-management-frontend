@@ -4,13 +4,28 @@ export type { ISendOtp, IVerifyOtp, ILogin } from "./auth.type"
 export type { ITourPackage } from "./tour.type";
 
 
-export interface IResponse<T> {
-  statusCode: number
-  success: boolean
-  message: string
-  data: T
+// export interface IResponse<T> {
+//   statusCode: number
+//   success: boolean
+//   message: string
+//   data: T
+// }
+
+
+export interface IMeta {
+  page: number;
+  limit: number;
+  total: number;
+  totalPage: number;
 }
 
+export interface IResponse<T> {
+  statusCode: number;
+  success: boolean;
+  message: string;
+  data: T;
+  meta?: IMeta; // optional, only present for paginated responses
+}
 
 export interface ISidebarItems {
   title: string;
