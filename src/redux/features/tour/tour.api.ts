@@ -64,7 +64,7 @@ export const tourApi = baseApi.injectEndpoints({
         getAllTours: builder.query<{
             data: ITourPackage[];
             meta: IMeta;
-        }, { page?: number; limit?: number; division?: string; tourType?: string; searchTerm?: string; sort?: string } | void>({
+        }, { _id?: string; page?: number; limit?: number; division?: string; tourType?: string; searchTerm?: string; sort?: string } | void>({
             query: (params) => ({
                 url: "/tour",
                 method: "GET",
