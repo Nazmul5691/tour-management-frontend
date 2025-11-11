@@ -57,7 +57,7 @@ export default function TourFilters() {
     };
 
     return (
-        <div className="col-span-3 w-full h-[500px] border border-muted rounded-md p-5 space-y-4">
+        <div className="col-span-3 w-full h-[220px] border border-muted rounded-md p-5 space-y-4">
             <div className="flex justify-between items-center">
                 <h1>Filters</h1>
                 <Button size="sm" variant="outline" onClick={handleClearFilter}>

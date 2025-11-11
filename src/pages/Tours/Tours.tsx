@@ -1,30 +1,52 @@
+
+
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { useGetAllToursQuery } from "@/redux/features/tour/tour.api";
 import { Link, useSearchParams } from "react-router";
-import { ChevronLeft, ChevronRight, MapPin, Users, Calendar, Book } from "lucide-react";
+import { ChevronLeft, ChevronRight, MapPin, Users, Calendar, Book, ArrowDownWideNarrow } from "lucide-react";
 import TourBanner from "@/components/modules/Tours/TourBanner";
 import TourFilters from "@/components/modules/Tours/TourFilters";
+
+// Define the available sort options and their corresponding query values
+const sortOptions = [
+  { label: "Recommended", value: "" }, // Default or backend-decided sort (e.g., relevance)
+  { label: "Price: low to high", value: "costFrom" },
+  { label: "Price: high to low", value: "-costFrom" },
+  { label: "Newest", value: "-createdAt" },
+];
 
 export default function Tours() {
   const [searchParams] = useSearchParams();
   const division = searchParams.get("division") || undefined;
   const tourType = searchParams.get("tourType") || undefined;
+  // Assuming 'searchTerm' might also be used in the URL
+  const searchTerm = searchParams.get("searchTerm") || undefined;
 
+  // Pagination state
   const [page, setPage] = useState(1);
   const limit = 6;
+
+  // State for sorting, initialized to the recommended/default option
+  const [sort, setSort] = useState<string>('');
+
   const [activeImage, setActiveImage] = useState<{ [key: string]: number }>({});
 
+  // 1. Reset page on filter/sort change
   useEffect(() => {
     setPage(1);
-  }, [division, tourType]);
+  }, [division, tourType, sort, searchTerm]); // Reset page whenever filters or sort change
 
+  // 2. Fetch tours with sort parameter
   const { data: toursResponse, isFetching } = useGetAllToursQuery({
     division,
     tourType,
     page,
     limit,
+    searchTerm,
+    // Pass the sort value. Use undefined if it's the default empty string.
+    sort: sort || undefined,
   });
 
   const tours = toursResponse?.data || [];
@@ -34,6 +56,7 @@ export default function Tours() {
 
   const showPagination = totalTours > limit;
 
+  // Pagination logic
   const maxVisible = 5;
   let startPage = Math.max(1, page - 2);
   const endPage = Math.min(totalPages, startPage + maxVisible - 1);
@@ -51,6 +74,17 @@ export default function Tours() {
     return `${diff} Day${diff > 1 ? "s" : ""}, ${diff - 1} Night${diff > 2 ? "s" : ""}`;
   };
 
+  // NEW HELPER: Calculates the night count to use as a divisor for cost.
+  const getNightDivisor = (start: string, end: string): number => {
+    const startDate = new Date(start);
+    const endDate = new Date(end);
+    const days = Math.ceil((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)) || 1;
+
+    // Nights is days - 1. We ensure the divisor is at least 1 to prevent division by zero.
+    // This handles 1-day tours (0 nights) safely.
+    return Math.max(1, days - 1);
+  };
+
   // Handle image slider manually
   const handleNextImage = (id: string, total: number) => {
     setActiveImage((prev) => ({
@@ -66,30 +100,99 @@ export default function Tours() {
     }));
   };
 
+  // Handler to reset sort state
+  const handleResetSort = () => {
+    setSort('');
+  };
+
+  // Logic for Tour Count Header Text
+  const isFiltered = !!division || !!tourType || !!searchTerm;
+  const countText = isFiltered
+    ? `Showing ${totalTours} results matching your criteria`
+    : `Showing ${totalTours} available tours`;
+
   return (
     <section>
       <TourBanner />
 
-      <div className="container mx-auto px-5 pb-20 pt-">
-        {/* Header */}
+      <div className="container mx-auto px-5 pb-20 pt-8">
+        {/* Page Title Header (Unchanged) */}
         <div className="text-center my-8">
-
           <h1 className="text-3xl md:text-[40px] font-bold text-white drop-shadow-lg mb-4">
             <span className="bg-gradient-to-r from-yellow-400 via-orange-500 to-pink-500 bg-clip-text text-transparent">
               Our Exclusive Tours
             </span>
           </h1>
-
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-12 gap-8">
-          {/* Filters */}
+          {/* Filters Sidebar */}
           <div className="col-span-12 md:col-span-3">
             <TourFilters />
+            
           </div>
 
-          {/* Tours */}
+          {/* Tours List and Controls */}
           <div className="col-span-12 md:col-span-9">
+
+            {/* 3. New Tour Count and Sort Header - STYLED */}
+            {!isFetching && (
+              <div className="flex justify-between items-center mb-6 px-4 py-3 bg-white rounded-xl shadow-lg border border-gray-100">
+                {/* Tour Count Display */}
+                <div className="text-sm md:text-base font-semibold text-gray-700">
+                  {countText}
+                </div>
+
+                {/* Sort By Dropdown and Reset */}
+                <div className="flex items-center space-x-3">
+
+                  <div className="flex items-center space-x-2">
+                    <ArrowDownWideNarrow size={18} className="text-orange-500" />
+                    <label htmlFor="tour-sort" className="text-sm font-medium text-gray-700 whitespace-nowrap hidden sm:block">
+                      Sort By:
+                    </label>
+
+                    <div className="relative">
+                      {/* Beautiful Dropdown */}
+                      <select
+                        id="tour-sort"
+                        value={sort}
+                        onChange={(e) => setSort(e.target.value)}
+                        className="appearance-none block w-full py-2 pl-3 pr-8 text-sm border border-orange-300 rounded-lg bg-orange-50/70 text-gray-800 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 cursor-pointer transition shadow-inner"
+                      >
+                        {sortOptions.map((option) => (
+                          <option key={option.value} value={option.value}>
+                            {option.label}
+                          </option>
+                        ))}
+                      </select>
+                      {/* Custom Chevron Down Icon */}
+                      <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Reset Button */}
+                  <Button
+                    onClick={handleResetSort}
+                    disabled={sort === ''} // Disabled if already on 'Recommended'
+                    className={`
+                                text-xs py-1.5 h-auto px-3 rounded-lg font-semibold transition duration-200
+                                ${sort === ''
+                        ? 'bg-gray-300 text-gray-600 cursor-not-allowed shadow-none'
+                        : 'bg-red-500 hover:bg-red-600 text-white shadow-md hover:shadow-lg'
+                      }
+                            `}
+                    aria-label="Reset Sort"
+                  >
+                    Reset
+                  </Button>
+                </div>
+              </div>
+            )}
+
+            {/* Tours Grid */}
             {isFetching ? (
               <div className="text-center py-20 text-lg font-semibold">Loading...</div>
             ) : tours.length > 0 ? (
@@ -97,8 +200,13 @@ export default function Tours() {
                 {tours.map((item: any) => {
                   const images = item.images?.length
                     ? item.images
-                    : ["/images/default-tour.jpg"];
+                    : ["https://placehold.co/600x400/FF5722/FFFFFF?text=Tour+Image"];
                   const currentImageIndex = activeImage[item._id] || 0;
+
+                  // PRICE PER NIGHT CALCULATION
+                  const nightDivisor = getNightDivisor(item.startDate, item.endDate);
+                  const pricePerNight = Math.round(item.costFrom / nightDivisor);
+                  // END PRICE PER NIGHT CALCULATION
 
                   return (
                     <div
@@ -111,6 +219,11 @@ export default function Tours() {
                           src={images[currentImageIndex]}
                           alt={item.title}
                           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                          // Fallback for placeholder image if necessary
+                          onError={(e) => {
+                            (e.target as HTMLImageElement).onerror = null;
+                            (e.target as HTMLImageElement).src = "https://placehold.co/600x400/FF5722/FFFFFF?text=Tour+Image";
+                          }}
                         />
                         {images.length > 1 && (
                           <>
@@ -135,7 +248,6 @@ export default function Tours() {
                         <div className="mb-2 flex flex-row items-center">
                           <Book className="w-4 h-4 mr-1 text-orange-500" />
                           {item.tourType?.name || "Tour"}
-
                         </div>
 
                         <Link to={`/tours/${item._id}`}>
@@ -149,20 +261,29 @@ export default function Tours() {
                           {item.departureLocation || item.location}
                         </div>
 
-                        {/* Price */}
-                        <div className="mt-2 flex flex-row justify-between ">
-                          <div>
-                            <span className="text-gray-600 text-sm">Starts From </span>
-                            <span className="text-orange-600 font-bold text-lg">
-                              ৳{item.costFrom?.toLocaleString()}
-                            </span>
-                            {item.oldPrice && (
-                              <span className="line-through text-gray-400 ml-2">
-                                ৳{item.oldPrice}
+                        {/* Price & Button (Updated Layout) */}
+                        <div className="mt-2 flex flex-row justify-between items-end">
+                          {/* Price Column */}
+                          <div className="flex flex-col">
+                            <div className="mb-1">
+                              <span className="text-gray-600 text-sm">Starts From </span>
+                              <span className="text-orange-600 font-bold text-lg">
+                                ৳{item.costFrom?.toLocaleString()}
                               </span>
-                            )}
+                              {item.oldPrice && (
+                                <span className="line-through text-gray-400 ml-2">
+                                  ৳{item.oldPrice}
+                                </span>
+                              )}
+                            </div>
+
+                            {/* NEW: Price Per Night Display */}
+                            <div className="text-sm font-medium text-gray-700">
+                              (৳{pricePerNight?.toLocaleString()} / night)
+                            </div>
                           </div>
-                          {/* Button */}
+
+                          {/* Button Column */}
                           <div className="">
                             <Button
                               asChild
@@ -201,74 +322,6 @@ export default function Tours() {
               </div>
             )}
 
-            {/* Pagination */}
-            {/* {showPagination && (
-              <div className="flex justify-center items-center mt-10 gap-2">
-                <Button
-                  onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
-                  disabled={page === 1}
-                  className="bg-gray-200 hover:cursor-pointer text-gray-700 hover:bg-gray-300"
-                >
-                  &lt;
-                </Button>
-
-                {visiblePages.map((num) => (
-                  <Button
-                    key={num}
-                    onClick={() => setPage(num)}
-                    className={`${page === num
-                      ? "text-sm text-white bg-gradient-to-r from-yellow-400 via-orange-500 to-pink-500 hover:from-yellow-500 hover:cursor-pointer hover:to-rose-600 font-semibold"
-                      : "bg-gray-200 text-gray-700 hover:bg-gray-300"
-                      }`}
-                  >
-                    {num}
-                  </Button>
-                ))}
-
-                <Button
-                  onClick={() =>
-                    setPage((prev) => Math.min(prev + 1, totalPages))
-                  }
-                  disabled={page === totalPages}
-                  className="bg-gray-200 text-gray-700 hover:bg-gray-300"
-                >
-                  &gt;
-                </Button>
-              </div>
-            )} */}
-            {/* Pagination */}
-            {/* {showPagination && (
-              <div className="flex justify-center items-center mt-10 gap-2">
-                <Button
-                  onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
-                  disabled={page === 1}
-                  className={`bg-gray-200 text-gray-700 hover:bg-gray-300 ${page === 1 ? "cursor-not-allowed" : "cursor-pointer"}`}
-                >
-                  &lt;
-                </Button>
-
-                {visiblePages.map((num) => (
-                  <Button
-                    key={num}
-                    onClick={() => setPage(num)}
-                    className={`${page === num
-                      ? "text-sm text-white bg-gradient-to-r from-yellow-400 via-orange-500 to-pink-500 hover:from-yellow-500 hover:to-rose-600 font-semibold cursor-pointer"
-                      : "bg-gray-200 text-gray-700 hover:bg-gray-300 cursor-pointer"
-                      }`}
-                  >
-                    {num}
-                  </Button>
-                ))}
-
-                <Button
-                  onClick={() => setPage((prev) => Math.min(prev + 1, totalPages))}
-                  disabled={page === totalPages}
-                  className={`bg-gray-200 text-gray-700 hover:bg-gray-300 ${page === totalPages ? "cursor-not-allowed" : "cursor-pointer"}`}
-                >
-                  &gt;
-                </Button>
-              </div>
-            )} */}
             {/* Pagination */}
             {showPagination && (
               <div className="flex justify-center items-center mt-10 gap-2">
@@ -328,14 +381,3 @@ export default function Tours() {
     </section>
   );
 }
-
-
-
-
-
-
-
-
-
-
-
