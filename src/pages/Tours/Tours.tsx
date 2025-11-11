@@ -1,28 +1,25 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-
-
 import { useState, useEffect } from "react";
-import TourFilters from "@/components/modules/Tours/TourFilters";
 import { Button } from "@/components/ui/button";
 import { useGetAllToursQuery } from "@/redux/features/tour/tour.api";
 import { Link, useSearchParams } from "react-router";
+import { ChevronLeft, ChevronRight, MapPin, Users, Calendar, Book } from "lucide-react";
+import TourBanner from "@/components/modules/Tours/TourBanner";
+import TourFilters from "@/components/modules/Tours/TourFilters";
 
 export default function Tours() {
   const [searchParams] = useSearchParams();
   const division = searchParams.get("division") || undefined;
   const tourType = searchParams.get("tourType") || undefined;
 
-  // Pagination state
   const [page, setPage] = useState(1);
-  const limit = 10; // tours per page
+  const limit = 6;
+  const [activeImage, setActiveImage] = useState<{ [key: string]: number }>({});
 
-  // FIX: Reset page to 1 whenever filters change
   useEffect(() => {
-    // This ensures that when a new filter is applied, we go back to the first page
     setPage(1);
   }, [division, tourType]);
 
-  // Fetch tours with pagination
   const { data: toursResponse, isFetching } = useGetAllToursQuery({
     division,
     tourType,
@@ -30,16 +27,13 @@ export default function Tours() {
     limit,
   });
 
-  // Extract data (assuming the backend fix ensures meta.total is correct)
   const tours = toursResponse?.data || [];
   const meta = toursResponse?.meta;
   const totalPages = meta?.totalPage || 1;
   const totalTours = meta?.total || 0;
 
-  // CORRECT LOGIC: Show pagination only if the total filtered tours exceed the limit.
   const showPagination = totalTours > limit;
 
-  // Calculate visible pages (max 5 pages at a time)
   const maxVisible = 5;
   let startPage = Math.max(1, page - 2);
   const endPage = Math.min(totalPages, startPage + maxVisible - 1);
@@ -49,160 +43,299 @@ export default function Tours() {
     (_, i) => startPage + i
   );
 
-  return (
-    <section className="container mx-auto px-5 pb-16 pt-28">
-      {/* Page Header */}
-      <div className="text-center mb-10">
-        <h1 className="text-3xl md:text-4xl font-bold text-primary">
-          Explore Our Tours
-        </h1>
-        <p className="text-muted-foreground mt-2">
-          Choose your dream destination — filter by division or tour type
-        </p>
-      </div>
+  const getDuration = (start: string, end: string) => {
+    const startDate = new Date(start);
+    const endDate = new Date(end);
+    const diff =
+      Math.ceil((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)) || 1;
+    return `${diff} Day${diff > 1 ? "s" : ""}, ${diff - 1} Night${diff > 2 ? "s" : ""}`;
+  };
 
-      <div className="grid grid-cols-1 md:grid-cols-12 gap-8">
-        {/* Filters Sidebar */}
-        <div className="col-span-12 md:col-span-3">
-          <TourFilters />
+  // Handle image slider manually
+  const handleNextImage = (id: string, total: number) => {
+    setActiveImage((prev) => ({
+      ...prev,
+      [id]: ((prev[id] || 0) + 1) % total,
+    }));
+  };
+
+  const handlePrevImage = (id: string, total: number) => {
+    setActiveImage((prev) => ({
+      ...prev,
+      [id]: (prev[id] || 0) === 0 ? total - 1 : (prev[id] || 0) - 1,
+    }));
+  };
+
+  return (
+    <section>
+      <TourBanner />
+
+      <div className="container mx-auto px-5 pb-20 pt-">
+        {/* Header */}
+        <div className="text-center my-8">
+
+          <h1 className="text-3xl md:text-[40px] font-bold text-white drop-shadow-lg mb-4">
+            <span className="bg-gradient-to-r from-yellow-400 via-orange-500 to-pink-500 bg-clip-text text-transparent">
+              Our Exclusive Tours
+            </span>
+          </h1>
+
         </div>
 
-        {/* Tour Cards */}
-        <div className="col-span-12 md:col-span-9 space-y-8">
-          {isFetching ? (
-            <div className="text-center py-20">Loading...</div>
-          ) : tours.length > 0 ? (
-            tours.map((item: any) => (
-              <div
-                key={item._id}
-                className="group border border-gray-200 rounded-xl shadow-md overflow-hidden hover:shadow-xl transition duration-300 bg-white"
-              >
-                <div className="flex flex-col md:flex-row">
-                  {/* Tour Image */}
-                  <div className="md:w-2/5 w-full h-56 md:h-auto flex-shrink-0 overflow-hidden">
-                    <img
-                      src={item.images?.[0] || "/images/default-tour.jpg"}
-                      alt={item.title}
-                      className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-300"
-                    />
-                  </div>
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-8">
+          {/* Filters */}
+          <div className="col-span-12 md:col-span-3">
+            <TourFilters />
+          </div>
 
-                  {/* Tour Details */}
-                  <div className="flex-1 p-6 flex flex-col justify-between">
-                    <div>
-                      <h3 className="text-xl md:text-2xl font-semibold mb-2 text-gray-800">
-                        {item.title}
-                      </h3>
-                      <p className="text-gray-600 mb-4 line-clamp-2">
-                        {item.description}
-                      </p>
+          {/* Tours */}
+          <div className="col-span-12 md:col-span-9">
+            {isFetching ? (
+              <div className="text-center py-20 text-lg font-semibold">Loading...</div>
+            ) : tours.length > 0 ? (
+              <div className="grid sm:grid-cols-1 lg:grid-cols-2 gap-8">
+                {tours.map((item: any) => {
+                  const images = item.images?.length
+                    ? item.images
+                    : ["/images/default-tour.jpg"];
+                  const currentImageIndex = activeImage[item._id] || 0;
 
-                      <div className="grid grid-cols-2 gap-3 text-sm mb-4">
-                        <p>
-                          <span className="font-medium">From:</span>{" "}
-                          {item.departureLocation || "N/A"}
-                        </p>
-                        <p>
-                          <span className="font-medium">To:</span>{" "}
-                          {item.arrivalLocation || item.location || "N/A"}
-                        </p>
-                        <p>
-                          <span className="font-medium">Duration:</span>{" "}
-                          {item.tourPlan?.length || 0} days
-                        </p>
-                        <p>
-                          <span className="font-medium">Min Age:</span>{" "}
-                          {item.minAge}+
-                        </p>
-                      </div>
-
-                      <div className="flex flex-wrap gap-2 mb-4">
-                        {item.amenities?.slice(0, 3).map(
-                          (amenity: string, index: number) => (
-                            <span
-                              key={index}
-                              className="px-3 py-1 bg-orange-100 text-orange-700 text-xs rounded-full font-medium"
+                  return (
+                    <div
+                      key={item._id}
+                      className="relative bg-white/70 backdrop-blur-xl border border-white/40 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden"
+                    >
+                      {/* Image Slider */}
+                      <div className="relative w-full h-56 overflow-hidden">
+                        <img
+                          src={images[currentImageIndex]}
+                          alt={item.title}
+                          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                        />
+                        {images.length > 1 && (
+                          <>
+                            <button
+                              onClick={() => handlePrevImage(item._id, images.length)}
+                              className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-white/70 hover:bg-white text-gray-700 p-1.5 rounded-full shadow"
                             >
-                              {amenity}
-                            </span>
-                          )
-                        )}
-                        {item.amenities?.length > 3 && (
-                          <span className="px-3 py-1 bg-gray-100 text-gray-600 text-xs rounded-full">
-                            +{item.amenities.length - 3} more
-                          </span>
+                              <ChevronLeft size={18} />
+                            </button>
+                            <button
+                              onClick={() => handleNextImage(item._id, images.length)}
+                              className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-white/70 hover:bg-white text-gray-700 p-1.5 rounded-full shadow"
+                            >
+                              <ChevronRight size={18} />
+                            </button>
+                          </>
                         )}
                       </div>
-                    </div>
 
-                    <div className="flex items-center justify-between mt-3">
-                      <span className="text-lg md:text-xl font-semibold text-primary">
-                        From ৳{item.costFrom?.toLocaleString() || "N/A"}
-                      </span>
+                      {/* Card Body */}
+                      <div className="px-5 py-4">
+                        <div className="mb-2 flex flex-row items-center">
+                          <Book className="w-4 h-4 mr-1 text-orange-500" />
+                          {item.tourType?.name || "Tour"}
 
-                      <Button
-                        asChild
-                        className="bg-orange-500 hover:bg-orange-600"
-                      >
-                        <Link to={`/tours/${item._id}`}>View Details</Link>
-                      </Button>
+                        </div>
+
+                        <Link to={`/tours/${item._id}`}>
+                          <h3 className="text-lg font-bold text-gray-800 hover:text-orange-600 transition-colors">
+                            {item.title}
+                          </h3>
+                        </Link>
+
+                        <div className="flex items-center text-gray-600 mt-1 text-sm">
+                          <MapPin className="w-4 h-4 mr-1 " />
+                          {item.departureLocation || item.location}
+                        </div>
+
+                        {/* Price */}
+                        <div className="mt-2 flex flex-row justify-between ">
+                          <div>
+                            <span className="text-gray-600 text-sm">Starts From </span>
+                            <span className="text-orange-600 font-bold text-lg">
+                              ৳{item.costFrom?.toLocaleString()}
+                            </span>
+                            {item.oldPrice && (
+                              <span className="line-through text-gray-400 ml-2">
+                                ৳{item.oldPrice}
+                              </span>
+                            )}
+                          </div>
+                          {/* Button */}
+                          <div className="">
+                            <Button
+                              asChild
+                              className="text-sm text-white bg-gradient-to-r from-yellow-400 via-orange-500 to-pink-500 hover:from-yellow-500 hover:to-rose-600 font-semibold"
+                            >
+                              <Link to={`/tours/${item._id}`}>View Details</Link>
+                            </Button>
+                          </div>
+                        </div>
+
+                        {/* Info Row */}
+                        <div className="relative flex items-center text-gray-600 text-sm border-t mt-3 pt-3">
+                          <div className="flex items-center gap-1">
+                            <Calendar className="w-4 h-4 text-orange-500" />
+                            {getDuration(item.startDate, item.endDate)}
+                          </div>
+
+                          <div className="absolute left-1/2 transform -translate-x-1/2">
+                            |
+                          </div>
+
+                          <div className="flex items-center gap-1 ml-auto">
+                            <Users className="w-4 h-4 text-orange-500" />
+                            {item.maxGuest || "N/A"} Guests
+                          </div>
+                        </div>
+
+                      </div>
                     </div>
-                  </div>
+                  );
+                })}
+              </div>
+            ) : (
+              <div className="text-center py-20 text-gray-600 font-semibold">
+                No tours found
+              </div>
+            )}
+
+            {/* Pagination */}
+            {/* {showPagination && (
+              <div className="flex justify-center items-center mt-10 gap-2">
+                <Button
+                  onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
+                  disabled={page === 1}
+                  className="bg-gray-200 hover:cursor-pointer text-gray-700 hover:bg-gray-300"
+                >
+                  &lt;
+                </Button>
+
+                {visiblePages.map((num) => (
+                  <Button
+                    key={num}
+                    onClick={() => setPage(num)}
+                    className={`${page === num
+                      ? "text-sm text-white bg-gradient-to-r from-yellow-400 via-orange-500 to-pink-500 hover:from-yellow-500 hover:cursor-pointer hover:to-rose-600 font-semibold"
+                      : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                      }`}
+                  >
+                    {num}
+                  </Button>
+                ))}
+
+                <Button
+                  onClick={() =>
+                    setPage((prev) => Math.min(prev + 1, totalPages))
+                  }
+                  disabled={page === totalPages}
+                  className="bg-gray-200 text-gray-700 hover:bg-gray-300"
+                >
+                  &gt;
+                </Button>
+              </div>
+            )} */}
+            {/* Pagination */}
+            {/* {showPagination && (
+              <div className="flex justify-center items-center mt-10 gap-2">
+                <Button
+                  onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
+                  disabled={page === 1}
+                  className={`bg-gray-200 text-gray-700 hover:bg-gray-300 ${page === 1 ? "cursor-not-allowed" : "cursor-pointer"}`}
+                >
+                  &lt;
+                </Button>
+
+                {visiblePages.map((num) => (
+                  <Button
+                    key={num}
+                    onClick={() => setPage(num)}
+                    className={`${page === num
+                      ? "text-sm text-white bg-gradient-to-r from-yellow-400 via-orange-500 to-pink-500 hover:from-yellow-500 hover:to-rose-600 font-semibold cursor-pointer"
+                      : "bg-gray-200 text-gray-700 hover:bg-gray-300 cursor-pointer"
+                      }`}
+                  >
+                    {num}
+                  </Button>
+                ))}
+
+                <Button
+                  onClick={() => setPage((prev) => Math.min(prev + 1, totalPages))}
+                  disabled={page === totalPages}
+                  className={`bg-gray-200 text-gray-700 hover:bg-gray-300 ${page === totalPages ? "cursor-not-allowed" : "cursor-pointer"}`}
+                >
+                  &gt;
+                </Button>
+              </div>
+            )} */}
+            {/* Pagination */}
+            {showPagination && (
+              <div className="flex justify-center items-center mt-10 gap-2">
+                {/* Previous Button */}
+                <div className="relative group">
+                  <Button
+                    onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
+                    disabled={page === 1}
+                    className={`bg-gray-200 text-gray-700 hover:bg-gray-300 
+          ${page === 1 ? "cursor-not-allowed" : "cursor-pointer"}`}
+                  >
+                    &lt;
+                  </Button>
+                  {page === 1 && (
+                    <span className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity text-red-500 text-lg">
+                      ✖
+                    </span>
+                  )}
+                </div>
+
+                {/* Page Numbers */}
+                {visiblePages.map((num) => (
+                  <Button
+                    key={num}
+                    onClick={() => setPage(num)}
+                    className={`${page === num
+                      ? "text-sm text-white bg-gradient-to-r from-yellow-400 via-orange-500 to-pink-500 hover:from-yellow-500 hover:to-rose-600 font-semibold cursor-pointer"
+                      : "bg-gray-200 text-gray-700 hover:bg-gray-300 cursor-pointer"
+                      }`}
+                  >
+                    {num}
+                  </Button>
+                ))}
+
+                {/* Next Button */}
+                <div className="relative group">
+                  <Button
+                    onClick={() => setPage((prev) => Math.min(prev + 1, totalPages))}
+                    disabled={page === totalPages}
+                    className={`bg-gray-200 text-gray-700 hover:bg-gray-300 
+          ${page === totalPages ? "cursor-not-allowed" : "cursor-pointer"}`}
+                  >
+                    &gt;
+                  </Button>
+                  {page === totalPages && (
+                    <span className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity text-red-500 text-lg">
+                      ✖
+                    </span>
+                  )}
                 </div>
               </div>
-            ))
-          ) : (
-            <div className="text-center py-20">
-              <h2 className="text-xl font-semibold text-gray-600">
-                No tours found
-              </h2>
-              <p className="text-gray-500 mt-2">
-                Try adjusting your filters to find the perfect trip.
-              </p>
-            </div>
-          )}
+            )}
 
-          {/* Numbered Pagination */}
-          {showPagination && (
-            <div className="flex justify-center items-center mt-8 gap-2">
-              {/* Previous button */}
-              <Button
-                onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
-                disabled={page === 1}
-                className="bg-gray-200 text-gray-700 hover:bg-gray-300"
-              >
-                &lt;
-              </Button>
-
-              {/* Visible page numbers */}
-              {visiblePages.map((num) => (
-                <Button
-                  key={num}
-                  onClick={() => setPage(num)}
-                  className={`${
-                    page === num
-                      ? "bg-primary text-white"
-                      : "bg-gray-200 text-gray-700 hover:bg-gray-300"
-                  }`}
-                >
-                  {num}
-                </Button>
-              ))}
-
-              {/* Next button */}
-              <Button
-                onClick={() =>
-                  setPage((prev) => Math.min(prev + 1, totalPages))
-                }
-                disabled={page === totalPages}
-                className="bg-gray-200 text-gray-700 hover:bg-gray-300"
-              >
-                &gt;
-              </Button>
-            </div>
-          )}
+          </div>
         </div>
       </div>
     </section>
   );
 }
+
+
+
+
+
+
+
+
+
+
+

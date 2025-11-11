@@ -70,6 +70,7 @@ export const tourApi = baseApi.injectEndpoints({
                 method: "GET",
                 params: params,
             }),
+            
             providesTags: ["TOUR"],
             transformResponse: (response: IResponse<ITourPackage[]>) => ({
                 data: response.data,

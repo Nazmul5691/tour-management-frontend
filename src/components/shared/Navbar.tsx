@@ -12,7 +12,11 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { ModeToggle } from "../ModeToggler";
-import { authApi, useLogoutMutation, useUserInfoQuery } from "@/redux/features/auth/auth.api";
+import {
+  authApi,
+  useLogoutMutation,
+  useUserInfoQuery,
+} from "@/redux/features/auth/auth.api";
 import { useAppDispatch } from "@/redux/hook";
 import { role } from "@/constants/role";
 
@@ -33,15 +37,9 @@ export default function Navbar() {
   const dispatch = useAppDispatch();
 
   const [scrolled, setScrolled] = useState(false);
-  const [isHome, setIsHome] = useState(true);
 
   useEffect(() => {
-    // Detect which page we're on
-    setIsHome(window.location.pathname === "/");
-
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 50);
-    };
+    const handleScroll = () => setScrolled(window.scrollY > 50);
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
@@ -51,24 +49,28 @@ export default function Navbar() {
     dispatch(authApi.util.resetApiState());
   };
 
-  // Determine navbar background
-  const headerClass = isHome
-    ? scrolled
-      ? "bg-black/80 backdrop-blur-md shadow-md"
-      : "bg-gradient-to-b from-black/60 to-transparent backdrop-blur-sm"
-    : "bg-black shadow-md";
+  // ✅ Always use transparent style first, then dark on scroll
+  const headerClass = scrolled
+    ? "bg-black/80 backdrop-blur-md shadow-md"
+    : "bg-gradient-to-b from-black/60 to-transparent backdrop-blur-sm";
 
   return (
-    <header className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${headerClass}`}>
+    <header
+      className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${headerClass}`}
+    >
       <div className="container mx-auto px-4 flex h-16 items-center justify-between gap-4">
-        {/* Left side → Logo and Mobile Menu */}
+        {/* Left: Logo + Mobile Menu */}
         <div className="flex items-center gap-2">
           <Popover>
             <PopoverTrigger asChild>
-              <Button className="group size-8 md:hidden text-white hover:bg-black" variant="ghost" size="icon">
+              <Button
+                className="group size-8 md:hidden text-white hover:bg-black"
+                variant="ghost"
+                size="icon"
+              >
                 <svg
-                  width={16}
-                  height={16}
+                  width={20}
+                  height={20}
                   viewBox="0 0 24 24"
                   fill="none"
                   stroke="currentColor"
@@ -76,9 +78,9 @@ export default function Navbar() {
                   strokeLinecap="round"
                   strokeLinejoin="round"
                 >
-                  <path d="M4 12L20 12" />
-                  <path d="M4 12H20" />
-                  <path d="M4 12H20" />
+                  <line x1="4" y1="6" x2="20" y2="6" />
+                  <line x1="4" y1="12" x2="20" y2="12" />
+                  <line x1="4" y1="18" x2="20" y2="18" />
                 </svg>
               </Button>
             </PopoverTrigger>
@@ -91,7 +93,10 @@ export default function Navbar() {
                 <NavigationMenuList className="flex-col items-start gap-0 md:gap-2">
                   {navigationLinks.map((link, index) => (
                     <NavigationMenuItem key={index} className="w-full">
-                      <NavigationMenuLink asChild className="py-1.5 hover:text-black transition-colors">
+                      <NavigationMenuLink
+                        asChild
+                        className="py-1.5 hover:text-yellow-400 transition-colors"
+                      >
                         <a href={link.href}>{link.label}</a>
                       </NavigationMenuLink>
                     </NavigationMenuItem>
@@ -102,11 +107,15 @@ export default function Navbar() {
           </Popover>
 
           <a href="/" className="flex items-center">
-            <img src="/images/dream-tour.png" alt="Dream Tour Logo" className="h-10 w-auto" />
+            <img
+              src="/images/dream-tour.png"
+              alt="Dream Tour Logo"
+              className="h-10 w-auto"
+            />
           </a>
         </div>
 
-        {/* Middle → Nav links */}
+        {/* Middle: Desktop Links */}
         <div className="hidden md:flex items-center">
           <NavigationMenu>
             <NavigationMenuList className="gap-6">
@@ -114,14 +123,20 @@ export default function Navbar() {
                 <>
                   {link.role === "PUBLIC" && (
                     <NavigationMenuItem key={index}>
-                      <NavigationMenuLink asChild className="text-white/90 hover:text-yellow-400 py-1.5 font-medium transition-colors">
+                      <NavigationMenuLink
+                        asChild
+                        className="text-white/90 hover:text-yellow-400 py-1.5 font-medium transition-colors"
+                      >
                         <a href={link.href}>{link.label}</a>
                       </NavigationMenuLink>
                     </NavigationMenuItem>
                   )}
                   {link.role === data?.data?.role && (
                     <NavigationMenuItem key={index}>
-                      <NavigationMenuLink asChild className="text-white/90 hover:text-yellow-400 py-1.5 font-medium transition-colors">
+                      <NavigationMenuLink
+                        asChild
+                        className="text-white/90 hover:text-yellow-400 py-1.5 font-medium transition-colors"
+                      >
                         <a href={link.href}>{link.label}</a>
                       </NavigationMenuLink>
                     </NavigationMenuItem>
@@ -132,11 +147,15 @@ export default function Navbar() {
           </NavigationMenu>
         </div>
 
-        {/* Right → Mode toggle & Login/Logout */}
+        {/* Right: Mode toggle & Auth */}
         <div className="flex items-center gap-2">
           <ModeToggle />
           {data?.data?.email ? (
-            <Button onClick={handleLogout} variant="outline" className="text-sm bg-white/10 text-white border-white/20 hover:bg-white/20">
+            <Button
+              onClick={handleLogout}
+              variant="outline"
+              className="text-sm bg-white/10 text-white border-white/20 hover:bg-white/20"
+            >
               Logout
             </Button>
           ) : (
@@ -152,6 +171,7 @@ export default function Navbar() {
     </header>
   );
 }
+
 
 
 
