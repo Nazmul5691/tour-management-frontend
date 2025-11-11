@@ -1,9 +1,11 @@
 
 
+
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { useGetAllToursQuery } from "@/redux/features/tour/tour.api";
+import { useGetTourTypesQuery } from "@/redux/features/tour/tour.api";
 import { Link, useSearchParams } from "react-router";
 import { ChevronLeft, ChevronRight, MapPin, Users, Calendar, Book, ArrowDownWideNarrow } from "lucide-react";
 import TourBanner from "@/components/modules/Tours/TourBanner";
@@ -49,10 +51,14 @@ export default function Tours() {
     sort: sort || undefined,
   });
 
+  const { data: tourTypesResponse } = useGetTourTypesQuery({});
+
   const tours = toursResponse?.data || [];
   const meta = toursResponse?.meta;
   const totalPages = meta?.totalPage || 1;
   const totalTours = meta?.total || 0;
+
+  const tourTypes = tourTypesResponse?.data || [];
 
   const showPagination = totalTours > limit;
 
@@ -75,15 +81,7 @@ export default function Tours() {
   };
 
   // NEW HELPER: Calculates the night count to use as a divisor for cost.
-  const getNightDivisor = (start: string, end: string): number => {
-    const startDate = new Date(start);
-    const endDate = new Date(end);
-    const days = Math.ceil((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)) || 1;
 
-    // Nights is days - 1. We ensure the divisor is at least 1 to prevent division by zero.
-    // This handles 1-day tours (0 nights) safely.
-    return Math.max(1, days - 1);
-  };
 
   // Handle image slider manually
   const handleNextImage = (id: string, total: number) => {
@@ -129,7 +127,7 @@ export default function Tours() {
           {/* Filters Sidebar */}
           <div className="col-span-12 md:col-span-3">
             <TourFilters />
-            
+
           </div>
 
           {/* Tours List and Controls */}
@@ -203,10 +201,8 @@ export default function Tours() {
                     : ["https://placehold.co/600x400/FF5722/FFFFFF?text=Tour+Image"];
                   const currentImageIndex = activeImage[item._id] || 0;
 
-                  // PRICE PER NIGHT CALCULATION
-                  const nightDivisor = getNightDivisor(item.startDate, item.endDate);
-                  const pricePerNight = Math.round(item.costFrom / nightDivisor);
-                  // END PRICE PER NIGHT CALCULATION
+                  const matchedType = tourTypes.find((t: any) => t._id === item.tourType);
+                  const tourTypeName = matchedType?.name || "Tour";
 
                   return (
                     <div
@@ -215,16 +211,18 @@ export default function Tours() {
                     >
                       {/* Image Slider */}
                       <div className="relative w-full h-56 overflow-hidden">
-                        <img
-                          src={images[currentImageIndex]}
-                          alt={item.title}
-                          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                          // Fallback for placeholder image if necessary
-                          onError={(e) => {
-                            (e.target as HTMLImageElement).onerror = null;
-                            (e.target as HTMLImageElement).src = "https://placehold.co/600x400/FF5722/FFFFFF?text=Tour+Image";
-                          }}
-                        />
+                        <Link to={`/tours/${item._id}`}>
+                          <img
+                            src={images[currentImageIndex]}
+                            alt={item.title}
+                            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                            // Fallback for placeholder image if necessary
+                            onError={(e) => {
+                              (e.target as HTMLImageElement).onerror = null;
+                              (e.target as HTMLImageElement).src = "https://placehold.co/600x400/FF5722/FFFFFF?text=Tour+Image";
+                            }}
+                          />
+                        </Link>
                         {images.length > 1 && (
                           <>
                             <button
@@ -247,14 +245,12 @@ export default function Tours() {
                       <div className="px-5 py-4">
                         <div className="mb-2 flex flex-row items-center">
                           <Book className="w-4 h-4 mr-1 text-orange-500" />
-                          {item.tourType?.name || "Tour"}
+                          {tourTypeName}
                         </div>
+                        <h3 className="text-lg font-bold text-gray-800 hover:text-orange-600 transition-colors">
+                          {item.title}
+                        </h3>
 
-                        <Link to={`/tours/${item._id}`}>
-                          <h3 className="text-lg font-bold text-gray-800 hover:text-orange-600 transition-colors">
-                            {item.title}
-                          </h3>
-                        </Link>
 
                         <div className="flex items-center text-gray-600 mt-1 text-sm">
                           <MapPin className="w-4 h-4 mr-1 " />
@@ -277,10 +273,7 @@ export default function Tours() {
                               )}
                             </div>
 
-                            {/* NEW: Price Per Night Display */}
-                            <div className="text-sm font-medium text-gray-700">
-                              (৳{pricePerNight?.toLocaleString()} / night)
-                            </div>
+
                           </div>
 
                           {/* Button Column */}
@@ -378,6 +371,6 @@ export default function Tours() {
           </div>
         </div>
       </div>
-    </section>
+    </section >
   );
 }
