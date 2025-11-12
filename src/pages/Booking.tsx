@@ -16,7 +16,7 @@ export default function Booking() {
   const { data, isLoading, isError } = useGetAllToursQuery({ _id: id });
   const [createBooking] = useCreateBookingMutation();
 
-  const tourData = data?.[0];
+  const tourData = data?.data?.[0];
 
   useEffect(() => {
     if (!isLoading && !isError) {
@@ -65,13 +65,13 @@ export default function Booking() {
         </div>
       )}
 
-      {!isLoading && data?.length === 0 && (
+      {!isLoading && data?.data.length === 0 && (
         <div>
           <p>No Data Found</p>{" "}
         </div>
       )}
 
-      {!isLoading && !isError && data!.length > 0 && (
+      {!isLoading && !isError && data!.data!.length > 0 && (
         <>
           {/* Left Section - Tour Summary */}
           <div className="flex-1 space-y-6">

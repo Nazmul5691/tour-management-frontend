@@ -1,24 +1,25 @@
+import LocationMap from "@/components/modules/Tours/LocationMap";
 import TourDetailsBanner from "@/components/modules/Tours/TourDetailsBanner";
 import { Button } from "@/components/ui/button";
-import { useGetDivisionsQuery } from "@/redux/features/division/division.api";
+// import { useGetDivisionsQuery } from "@/redux/features/division/division.api";
 import { useGetAllToursQuery, useGetTourTypesQuery } from "@/redux/features/tour/tour.api";
 import { format } from "date-fns";
-import { Book, MapPin } from "lucide-react";
+import { Book, CheckSquare, MapPin, XSquare } from "lucide-react";
 import { Link, useParams } from "react-router";
 
 export default function TourDetails() {
     const { id } = useParams();
     const { data, isLoading } = useGetAllToursQuery({ _id: id });
 
-    const { data: divisionData } = useGetDivisionsQuery(
-        {
-            _id: data?.data?.[0]?.division,
-            fields: "name",
-        },
-        {
-            skip: !data
-        }
-    );
+    // const { data: divisionData } = useGetDivisionsQuery(
+    //     {
+    //         _id: data?.data?.[0]?.division,
+    //         fields: "name",
+    //     },
+    //     {
+    //         skip: !data
+    //     }
+    // );
 
     const { data: tourType } = useGetTourTypesQuery(
         {
@@ -56,6 +57,8 @@ export default function TourDetails() {
                             />
                         ))}
                     </div>
+
+
                     {/* Header */}
                     <div className="mb-6">
                         <div>
@@ -90,122 +93,191 @@ export default function TourDetails() {
                         <h2 className="text-xl font-semibold mb-4">Tour Plans</h2>
                         <div className="bg-white rounded-md p-5">
                             <ol className="space-y-2">
-                            {tourData?.tourPlan?.map((plan, index) => (
-                                <li key={index} className="flex">
-                                    <span className="bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm mr-3 mt-0.5">
-                                        {index + 1}
-                                    </span>
-                                    {plan}
-                                </li>
-                            ))}
-                        </ol>
+                                {tourData?.tourPlan?.map((plan, index) => (
+                                    <li key={index} className="flex">
+                                        <span className="bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm mr-3 mt-0.5">
+                                            {index + 1}
+                                        </span>
+                                        {plan}
+                                    </li>
+                                ))}
+                            </ol>
                         </div>
                     </div>
 
 
 
-                    {/* Tour Info */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
-                        <div>
-                            <h2 className="text-xl font-semibold mb-4">Tour Details</h2>
-                            <div className="space-y-2">
-                                <p>
-                                    <strong>Dates:</strong>{" "}
-                                    {format(
-                                        new Date(
-                                            tourData?.startDate ? tourData?.startDate : new Date()
-                                        ),
-                                        "PP"
-                                    )}{" "}
-                                    -{" "}
-                                    {format(
-                                        new Date(tourData?.endDate ? tourData?.endDate : new Date()),
-                                        "PP"
-                                    )}
-                                </p>
-                                <p>
-                                    <strong>Departure:</strong> {tourData?.departureLocation}
-                                </p>
-                                <p>
-                                    <strong>Arrival:</strong> {tourData?.arrivalLocation}
-                                </p>
-                                <p>
-                                    <strong>Division:</strong> {divisionData?.data?.[0]?.name}
-                                </p>
-                                <p>
-                                    <strong>Tour Type:</strong> {tourType?.data?.[0]?.name}
-                                </p>
-                                <p>
-                                    <strong>Min Age:</strong> {tourData?.minAge} years
-                                </p>
+                    {/* tour Amenities */}
+                    <div className="bg-gray-100 p-5 rounded-md mt-6">
+                        <h2 className="text-xl font-semibold mb-4">Tour Amenities</h2>
+                        <div className="bg-white rounded-md p-5">
+                            <ol className="space-y-2">
+                                {tourData?.amenities?.map((amenity, index) => (
+                                    <li key={index} className="flex">
+                                        <span className="bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm mr-3 mt-0.5">
+                                            {index + 1}
+                                        </span>
+                                        {amenity}
+                                    </li>
+                                ))}
+                            </ol>
+                        </div>
+                    </div>
+
+
+                    {/* tour included & excluded */}
+                    <div className="bg-gray-100 p-5 rounded-md mt-6">
+                        <h2 className="text-xl font-semibold mb-4">Tour Included & Excluded</h2>
+                        <div className="flex justify-between md:flex-row flex-col px-5">
+                            <div>
+                                <ol className="space-y-2">
+                                    {tourData?.included?.map((item, index) => (
+                                        <li key={index} className="flex items-center gap-2">
+                                            <CheckSquare className="h-4 w-4 text-green-600" />
+                                            <span>{item}</span>
+                                        </li>
+                                    ))}
+                                </ol>
+                            </div>
+                            <div>
+                                <ol className="space-y-2">
+                                    {tourData?.excluded?.map((item, index) => (
+                                        <li key={index} className="flex items-center gap-2">
+                                            <XSquare className="h-4 w-4 text-red-600" />
+                                            <span>{item}</span>
+                                        </li>
+                                    ))}
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    {/* gallery */}
+                    <div className="bg-gray-100 p-5 rounded-md mt-6">
+                        <h2 className="text-xl font-semibold mb-4">Gallery</h2>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+                            {tourData?.images?.map((image, index) => (
+                                <img
+                                    key={index}
+                                    src={image}
+                                    alt={`Gallery image ${index + 1}`}
+                                    className="w-full h-auto rounded-md"
+                                />
+                            ))}
+                        </div>
+                    </div>
+
+
+                    {/* location map */}
+                    <div className="bg-gray-100 p-5 rounded-md mt-6">
+                        <h2 className="text-xl font-semibold mb-4">Location</h2>
+                        <div className="w-full h-64">
+                            <LocationMap locationName={tourData?.location || "Bangladesh"} />
+                        </div>
+                    </div>
+
+
+
+
+                </div>
+
+                <div className="lg:col-span-1 space-y-6 ">
+
+                    {/* tour details */}
+                    <div className="bg-gray-100 p-5 border shadow-md flex flex-col gap-4 rounded-md">
+                        <h2 className="text-xl font-semibold ">Tour Details</h2>
+                        <div className="border"></div>
+
+                        <div className="grid grid-cols-2 flex font-semibold justify-between">
+                            <div>
+                                <p>Date</p>{" "}
+                            </div>
+                            <div className="text-gray-600">
+                                {format(
+                                    new Date(
+                                        tourData?.startDate ? tourData?.startDate : new Date()
+                                    ),
+                                    "PP"
+                                )}{" "}
+                                -{" "}
+                                {format(
+                                    new Date(tourData?.endDate ? tourData?.endDate : new Date()),
+                                    "PP"
+                                )}
+                            </div>
+                        </div>
+
+                        <div className="grid grid-cols-2 flex font-semibold justify-between">
+                            <div>
+                                <p>Duration</p>
+                            </div>
+                            <div className="text-gray-600">
+                                {tourData?.startDate && tourData?.endDate
+                                    ? (() => {
+                                        const start = new Date(tourData.startDate).getTime();
+                                        const end = new Date(tourData.endDate).getTime();
+                                        const days = Math.ceil((end - start) / (1000 * 60 * 60 * 24));
+                                        const nights = days > 0 ? days - 1 : 0;
+                                        return `${days} days,${nights} nights`;
+                                    })()
+                                    : "N/A"}
+                            </div>
+                        </div>
+
+                        <div className="grid grid-cols-2 flex font-semibold justify-between">
+                            <div>
+                                <p>Destination</p>
+                            </div>
+                            <div>
+                                <p className="text-gray-600">{tourData?.location}</p>
                             </div>
                         </div>
 
 
-                    </div>
-
-                    {/* Amenities & Inclusions */}
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
-                        <div>
-                            <h3 className="text-lg font-semibold mb-3">Amenities</h3>
-                            <ul className="space-y-1">
-                                {tourData?.amenities?.map((amenity, index) => (
-                                    <li key={index} className="flex items-center">
-                                        <span className="text-green-500 mr-2">✓</span>
-                                        {amenity}
-                                    </li>
-                                ))}
-                            </ul>
+                        <div className="grid grid-cols-2 flex font-semibold justify-between">
+                            <div>
+                                <p>Departure</p>{" "}
+                            </div>
+                            <div className="text-gray-600">
+                                {tourData?.startDate
+                                    ? new Date(tourData.startDate).toLocaleDateString("en-GB")
+                                    : "N/A"}
+                            </div>
                         </div>
 
-                        <div>
-                            <h3 className="text-lg font-semibold mb-3">Included</h3>
-                            <ul className="space-y-1">
-                                {tourData?.included?.map((item, index) => (
-                                    <li key={index} className="flex items-center">
-                                        <span className="text-green-500 mr-2">✓</span>
-                                        {item}
-                                    </li>
-                                ))}
-                            </ul>
+
+                        <div className="grid grid-cols-2 flex font-semibold justify-between">
+                            <div>
+                                <p>Return{" "}</p>
+                            </div>
+                            <div className="text-gray-600">
+                                {tourData?.endDate
+                                    ? new Date(tourData.endDate).toLocaleDateString("en-GB")
+                                    : "N/A"}
+                            </div>
                         </div>
 
-                        <div>
-                            <h3 className="text-lg font-semibold mb-3">Excluded</h3>
-                            <ul className="space-y-1">
-                                {tourData?.excluded?.map((item, index) => (
-                                    <li key={index} className="flex items-center">
-                                        <span className="text-red-500 mr-2">✗</span>
-                                        {item}
-                                    </li>
-                                ))}
-                            </ul>
+                        <div className="grid grid-cols-2 flex font-semibold justify-between">
+                            <div>
+                                <p>Total Peoples</p>
+                            </div>
+                            <div className="text-gray-600">
+                                <p >{tourData?.maxGuest}</p>
+                            </div>
                         </div>
+
                     </div>
 
-                    {/* Tour Plan */}
-                    <div className="mb-8">
-                        <h3 className="text-lg font-semibold mb-3">Tour Plan</h3>
-                        <ol className="space-y-2">
-                            {tourData?.tourPlan?.map((plan, index) => (
-                                <li key={index} className="flex">
-                                    <span className="bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm mr-3 mt-0.5">
-                                        {index + 1}
-                                    </span>
-                                    {plan}
-                                </li>
-                            ))}
-                        </ol>
-                    </div>
 
-                </div>
+                    {/* book now button */}
+                    <Button
+                        asChild
+                        className="text-sm w-full text-white bg-gradient-to-r from-yellow-400 via-orange-500 to-pink-500 hover:from-yellow-500 hover:to-rose-600 font-semibold"
+                    >
+                        <Link to={`/booking/${tourData?._id}`}>Book Now</Link>
+                    </Button>
 
-                <div className="lg:col-span-1 space-y-6">
-                    <div>
-                        <Button asChild>
-                            <Link to={`/booking/${tourData?._id}`}>Book Now</Link>
-                        </Button>
-                    </div>
                 </div>
             </div>
         </div>
