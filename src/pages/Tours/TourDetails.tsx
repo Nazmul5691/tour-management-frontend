@@ -189,7 +189,7 @@ export default function TourDetails() {
                         <h2 className="text-xl font-semibold ">Tour Details</h2>
                         <div className="border"></div>
 
-                        <div className="grid grid-cols-2 flex font-semibold justify-between">
+                        <div className="grid grid-cols-2 font-semibold justify-between">
                             <div>
                                 <p>Date</p>{" "}
                             </div>
@@ -208,7 +208,7 @@ export default function TourDetails() {
                             </div>
                         </div>
 
-                        <div className="grid grid-cols-2 flex font-semibold justify-between">
+                        <div className="grid grid-cols-2  font-semibold justify-between">
                             <div>
                                 <p>Duration</p>
                             </div>
@@ -225,7 +225,7 @@ export default function TourDetails() {
                             </div>
                         </div>
 
-                        <div className="grid grid-cols-2 flex font-semibold justify-between">
+                        <div className="grid grid-cols-2 font-semibold justify-between">
                             <div>
                                 <p>Destination</p>
                             </div>
@@ -235,7 +235,7 @@ export default function TourDetails() {
                         </div>
 
 
-                        <div className="grid grid-cols-2 flex font-semibold justify-between">
+                        <div className="grid grid-cols-2  font-semibold justify-between">
                             <div>
                                 <p>Departure</p>{" "}
                             </div>
@@ -247,7 +247,7 @@ export default function TourDetails() {
                         </div>
 
 
-                        <div className="grid grid-cols-2 flex font-semibold justify-between">
+                        <div className="grid grid-cols-2  font-semibold justify-between">
                             <div>
                                 <p>Return{" "}</p>
                             </div>
@@ -258,7 +258,7 @@ export default function TourDetails() {
                             </div>
                         </div>
 
-                        <div className="grid grid-cols-2 flex font-semibold justify-between">
+                        <div className="grid grid-cols-2 font-semibold justify-between">
                             <div>
                                 <p>Total Peoples</p>
                             </div>
